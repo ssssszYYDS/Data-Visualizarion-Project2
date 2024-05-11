@@ -4,7 +4,7 @@
 'use strict';
 const URL = {
     getDetail: `/api/detail/getdetail`,
-    aa: `/api/detail/aa`
+    getCSVData: `/api/data/getCSVData`
 };
 
 export default URL;

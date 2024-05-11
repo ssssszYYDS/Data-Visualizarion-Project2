@@ -57,11 +57,11 @@ module.exports = {
 
         // new api
         {
-            path: '/api/detail/aa',
-            handler: TestHandler.aa,
+            path: '/api/data/getCSVData',
+            handler: TestHandler.getCSVData,
             method: 'post',
             params: [
-                check('name').not().isEmpty(),
+                check('path').not().isEmpty(),
             ]
         },
 
