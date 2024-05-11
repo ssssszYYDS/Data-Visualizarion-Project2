@@ -16,3 +16,5 @@ yarn-error.log*
 
 push.bat
 pull.bat
+
+packages\server\data\CSVdata\*.csv
