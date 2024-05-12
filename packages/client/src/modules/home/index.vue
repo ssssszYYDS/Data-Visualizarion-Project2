@@ -92,7 +92,6 @@ export default {
 			Object.keys(checkinJournalCounts).forEach((key) => {
 				maxJournals = Math.max(maxJournals, parseInt(checkinJournalCounts[key].count))
 			});
-			console.log("maxJournals: " + maxJournals);
 			const k = -2500;
 			const a = (-(1 - split) * maxJournals + Math.sqrt(((1 - split) * maxJournals) ** 2 - 4 * (1 - split) * maxJournals * k)) / (1 - split) / 2;
 			const b = split - k / a;
@@ -209,6 +208,9 @@ export default {
 				console.log(this.transports);
 				if (res != null) {
 					this.drawTimeline();
+
+					console.log("data selected by id: ", 25);
+					this.drawTransportsTracePlot(this.selectDataById(25));
 				} else {
 					console.error("Failed to load transports data:", res);
 				}
@@ -248,7 +250,6 @@ export default {
 			var dragBehavior = d3.drag()
 				.on("drag", (event) => {
 					var startTime = new Date().getTime();
-					this.clearTransportsScatterPlot();
 
 					var x = event.x;
 					var max_x = this.timeline.node().getBoundingClientRect().width - this.handle.node().getBoundingClientRect().width;
@@ -307,7 +308,12 @@ export default {
 			return selectData;
 		},
 
+		selectDataById(id) {
+			return this.transports.filter(d => d.participantId == id);
+		},
+
 		drawTransportsScatterPlot(selectData) {
+			this.clearTransportsScatterPlot();
 			// Draw the scatter plot
 			this.svg.selectAll("circle")
 				.data(selectData)
@@ -323,6 +329,62 @@ export default {
 
 		clearTransportsScatterPlot() {
 			this.svg.selectAll("circle.scatter-point")
+				.remove();
+		},
+
+		drawTransportsTracePlot(selectData) {
+			// Draw the trace plot with arrows
+			this.clearTransportsTracePlot();
+
+			const arrowColor = "black";
+
+			// 定义箭头标记
+			this.svg.append("defs").append("marker")
+				.attr("id", "arrowhead")
+				.attr("viewBox", "0 0 10 10")
+				.attr("refX", 8)
+				.attr("refY", 5)
+				.attr("markerWidth", 12)
+				.attr("markerHeight", 12)
+				.attr("orient", "auto")
+				// .attr("opacity", 0.8)
+				.attr("fill", arrowColor)
+				.append("path")
+				.attr("d", "M 0 0 L 10 5 L 0 10 L 4 5 z");
+
+			// 绘制线条并添加箭头标记
+			this.svg.selectAll("line")
+				.data(selectData.slice(0, selectData.length - 1))
+				.enter()
+				.append("line")
+				.attr("class", "trace-line")
+				.attr("x1", (d, i) => { return this.xScale(d.loc_x); })
+				.attr("y1", (d, i) => { return this.yScale(d.loc_y); })
+				.attr("x2", (d, i) => { return this.xScale(selectData[i + 1].loc_x); })
+				.attr("y2", (d, i) => { return this.yScale(selectData[i + 1].loc_y); })
+				.attr("stroke", arrowColor)
+				.attr("stroke-width", 1)
+				.attr("stroke-opacity", 1)
+				.attr("marker-end", "url(#arrowhead)");
+
+
+			// Draw circles according to the stay time
+			var stayTime = 0;
+			var lastData = selectData[0];
+			selectData.forEach((data) => {
+				stayTime = (data.timeStampFloat - lastData.timeStampFloat) / 1000;
+				this.svg.append("circle")
+					.attr("cx", this.xScale(data.loc_x))
+					.attr("cy", this.yScale(data.loc_y))
+					.attr("r", (d) => { return (stayTime / 20) ** 0.5; })
+					.attr("fill", "gray")
+					.attr("fill-opacity", 0.8)
+				lastData = data;
+			});
+		},
+
+		clearTransportsTracePlot() {
+			this.svg.selectAll("line.trace-line")
 				.remove();
 		},
 	}
