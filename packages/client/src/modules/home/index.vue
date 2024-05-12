@@ -26,21 +26,22 @@ export default {
 			yScale: null,
 			speedColorScale: null,
 			timeScale: null,
-			curTime: null,
+			curTime: d3.timeParse('%Y-%m-%d %H:%M:%S')(this.date + ' 00:00:00').getTime(),
 			rellativeDay: null,
 			curRealTime: null,
 		};
 	},
 
 	async mounted() {
-		this.initBuildings();
+		await this.initBuildings();
 		await this.initTransports(this.date);
 		this.drawTimeline();
 	},
 
 	watch: {
-		date: function (newDate) {
-			this.initTransports(newDate);
+		date: async function (newDate) {
+			await this.initTransports(newDate);
+			this.drawTimeText();
 		}
 	},
 
@@ -196,7 +197,7 @@ export default {
 				const width = d3.select("#chart").node().getBoundingClientRect().width;
 				this.timeScale = d3.scaleTime()
 					.domain([0, width])
-					.range(d3.extent(transportsData.map(d => d.timeStampFloat)));
+					.range([parseTime(this.date + ' 00:00:00').getTime(), parseTime(this.date + ' 23:55:00').getTime()]);
 
 				this.speedColorScale = d3.scaleLinear()
 					.domain([250, 350, 450])
@@ -237,15 +238,7 @@ export default {
 				.style("height", "100%")
 				.style("background-color", "blue");
 
-			// 绘制时间标签
-			this.curRealTime = d3.timeFormat('%Y-%m-%d %H:%M:%S')(new Date(this.timeScale.range()[0]));
-			this.svg.append("text")
-				.attr("x", "95%")
-				.attr("y", "95%")
-				.attr("text-anchor", "end")
-				.attr("dominant-baseline", "bottom")
-				.style("font-size", "30px")
-				.text(this.curRealTime);
+			this.drawTimeText();
 
 			// 定义拖拽行为
 			this.handle.call(d3.drag()
@@ -270,7 +263,6 @@ export default {
 		},
 
 		clearTimeline() {
-			console.log("clearTimeline");
 			if (this.svg)
 				this.svg.selectAll("text")
 					.remove();
@@ -282,6 +274,24 @@ export default {
 				this.handle.remove();
 				this.handle = null;
 			}
+		},
+
+		drawTimeText() {
+			this.clearTimeText();
+			this.curRealTime = this.date + d3.timeFormat(' %H:%M:%S')(new Date(this.curTime));
+			this.svg.append("text")
+				.attr("x", "95%")
+				.attr("y", "95%")
+				.attr("text-anchor", "end")
+				.attr("dominant-baseline", "bottom")
+				.style("font-size", "30px")
+				.text(this.curRealTime);
+		},
+
+		clearTimeText() {
+			if (this.svg)
+				this.svg.selectAll("text")
+					.remove();
 		},
 
 
@@ -363,7 +373,7 @@ export default {
 				.attr("markerWidth", 12)
 				.attr("markerHeight", 12)
 				.attr("orient", "auto")
-				// .attr("opacity", 0.8)
+				.attr("opacity", 0.8)
 				.attr("fill", arrowColor)
 				.append("path")
 				.attr("d", "M 0 0 L 10 5 L 0 10 L 4 5 z");
@@ -394,8 +404,8 @@ export default {
 					.attr("cx", this.xScale(data.loc_x))
 					.attr("cy", this.yScale(data.loc_y))
 					.attr("r", (d) => { return (stayTime / 20) ** 0.5; })
-					.attr("fill", "gray")
-					.attr("fill-opacity", 0.8)
+					.attr("fill", "blue")
+					.attr("fill-opacity", 0.3)
 				lastData = data;
 			});
 		},
