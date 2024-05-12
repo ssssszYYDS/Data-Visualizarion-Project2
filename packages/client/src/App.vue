@@ -3,11 +3,14 @@ import Mapcomponent from './modules/home/index.vue';
 // import GameCategoriesComponent from './components/GameCategories.vue';
 // import PicturesComponent from './components/Pictures.vue';
 // import BarChartComponent from './components/BarChart.vue';
-// import RivermapComponent from './components/Rivermap.vue';
+import RivermapComponent from './components/Rivermap.vue';
 // import FeatureClusterComponent from './components/FeatureCluster.vue';
 // import WordCloudComponent from './components/WordCloud.vue';
 // import FunCommentsComponent from './components/FunComments.vue';
 // import SaveComponent from './components/Save.vue';
+
+// const date = '2022-03-01';
+const date = '2022-03-05';
 </script>
 
 <template>
@@ -18,15 +21,16 @@ import Mapcomponent from './modules/home/index.vue';
       </button>
     </div>
     <div id="chart" class="map">
-      <Mapcomponent></Mapcomponent>
+      <Mapcomponent :date="date"></Mapcomponent>
     </div>
     <div class="timeline">
-      <div class="time-point" @mousedown="startDrag" @mouseup="stopDrag"></div>
+      <div class="time-point"></div>
     </div>
-    <div class="under-timeline-plot">
-      <button @click="toDetail" style="width: 100%; height: 100%;">
+    <div id="river-chart" class="rivermap">
+      <!-- <button @click="toDetail" style="width: 100%; height: 100%;">
         Under-Timeline-Plot
-      </button>
+      </button> -->
+      <RivermapComponent :date="date"></RivermapComponent>
     </div>
     <div class="scatter-plot">
       <button @click="toDetail" style="width: 100%; height: 100%;">
@@ -44,10 +48,10 @@ import Mapcomponent from './modules/home/index.vue';
       </button>
     </div>
     <!-- <div class="request">
-			<button @click="renderBuildings" style="width: 100%; height: 100%;">
-				Render buildings
-			</button>
-		</div> -->
+      <button @click="renderBuildings" style="width: 100%; height: 100%;">
+        Render buildings
+      </button>
+    </div> -->
   </div>
 </template>
 
@@ -85,7 +89,7 @@ import Mapcomponent from './modules/home/index.vue';
   grid-area: 39 / 5 / 41 / 17;
 }
 
-.under-timeline-plot {
+.rivermap {
   grid-area: 41 / 5 / 56 / 17;
 }
 

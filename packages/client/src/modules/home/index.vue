@@ -8,9 +8,16 @@ import Urls from '../../common/urls/index';
 
 export default {
 	name: 'Mapcomponent',
+
+	props: {
+		date: {
+			type: String,
+			required: true,
+		},
+	},
+
 	data() {
 		return {
-			date: '2022-03-03',
 			svg: null, // 保存SVG引用以便重新绘制
 			buildings: null, // 保存建筑物数据
 			initBuildingsOpacitySplit: 0.1,
@@ -34,24 +41,17 @@ export default {
 
 	beforeUnmount() {
 		window.removeEventListener('resize', this.redrawBuildings);
-		this.removeSvg();
 	},
 
 	methods: {
 		async initBuildings() {
 			try {
 				const buildings = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/building.csv' });
-
-				// await this.initBuildingsOpacityByApartment(buildings, this.initBuildingsOpacitySplit); // 根据租金设置建筑物的透明度
-				await this.initBuildingsOpacityByCheckin(buildings, this.initBuildingsOpacitySplit); // 根据checkin设置建筑物的透明度
-
 				this.buildings = buildings
+
 
 				console.log("buildings data: ");
 				console.log(buildings);
-
-				// console.log("apartments data: ");
-				// console.log(apartments);
 
 				if (buildings != null) {
 					this.drawBuildings(buildings);
@@ -107,7 +107,7 @@ export default {
 			});
 		},
 
-		drawBuildings(data) {
+		async drawBuildings(data) {
 			this.removeSvg();
 
 			const coordinates = data.flatMap(d => d.location.split(", ").map(point => {
@@ -138,7 +138,7 @@ export default {
 				.attr("width", "100%")
 				.attr("height", "100%")
 				.style("background-color", "lightgrey")
-				.style("border", "1px solid black")
+				.style("border", "1px solid black");
 
 			this.xScale = d3.scaleLinear()
 				.domain([min_x, max_x])
@@ -146,6 +146,9 @@ export default {
 			this.yScale = d3.scaleLinear()
 				.domain([min_y, max_y])
 				.range([0, height * picture_range]);
+
+			// await this.initBuildingsOpacityByApartment(buildings, this.initBuildingsOpacitySplit); // 根据租金设置建筑物的透明度
+			await this.initBuildingsOpacityByCheckin(this.buildings, this.initBuildingsOpacitySplit); // 根据checkin设置建筑物的透明度
 
 			this.svg.selectAll("polygon")
 				.data(data)
@@ -234,7 +237,6 @@ export default {
 				.style("background-color", "blue");
 
 			this.curRealTime = d3.timeFormat('%Y-%m-%d %H:%M:%S')(new Date(this.timeScale.range()[0]));
-			console.log("curRealTime: " + this.curRealTime);
 			this.svg.append("text")
 				.attr("x", "95%")
 				.attr("y", "95%")
