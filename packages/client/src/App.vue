@@ -4,13 +4,17 @@
 import { ref } from 'vue';
 import Mapcomponent from './modules/home/index.vue';
 import CategoriesComponent from './components/Categories.vue';
+import ClusterGraphComponent from './components/ClusterGraph.vue';
 import RivermapComponent from './components/Rivermap.vue';
 
 const date = ref('2022-03-01');
-// const date = ref('2022-03-05');
+const selectedId = ref(null);
 
 const handleDateUpdate = (newDate) => {
   date.value = newDate;
+}
+const handleSelectedIdUpdate = (newId) => {
+  selectedId.value = newId;
 }
 
 </script>
@@ -18,11 +22,12 @@ const handleDateUpdate = (newDate) => {
 <template>
   <div class="wrapper">
     <div class="calendar">
-      <CategoriesComponent :date="date" @update:date="handleDateUpdate"></CategoriesComponent>
+      <CategoriesComponent :date="date" @update:date="handleDateUpdate">
+      </CategoriesComponent>
       <p>当前日期：{{ date }}</p>
     </div>
     <div id="chart" class="map">
-      <Mapcomponent :date="date"></Mapcomponent>
+      <Mapcomponent :date="date" :selectedId="selectedId"></Mapcomponent>
     </div>
     <div class="timeline">
       <div class="time-point"></div>
@@ -31,9 +36,8 @@ const handleDateUpdate = (newDate) => {
       <RivermapComponent :date="date"></RivermapComponent>
     </div>
     <div class="scatter-plot">
-      <button @click="toDetail" style="width: 100%; height: 100%;">
-        Scatter-Plot
-      </button>
+      <ClusterGraphComponent :selectedId="selectedId" @update:selectedId="handleSelectedIdUpdate">
+      </ClusterGraphComponent>
     </div>
     <div class="daily-life-plot">
       <button @click="toDetail" style="width: 100%; height: 100%;">

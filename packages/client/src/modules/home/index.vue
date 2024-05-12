@@ -14,6 +14,10 @@ export default {
 			type: String,
 			required: true,
 		},
+		selectedId: {
+			type: String,
+			required: true,
+		},
 	},
 
 	data() {
@@ -42,7 +46,10 @@ export default {
 		date: async function (newDate) {
 			await this.initTransports(newDate);
 			this.drawTimeText();
-		}
+		},
+		selectedId: async function (newId) {
+			this.drawTransportsTracePlot(this.selectDataById(newId));
+		},
 	},
 
 
@@ -210,8 +217,8 @@ export default {
 					this.clearTransportsScatterPlot();
 
 					// 测试绘制轨迹图
-					console.log("data selected by id: ", 25);
-					this.drawTransportsTracePlot(this.selectDataById(25));
+					console.log("data selected by id: ", this.selectedId);
+					this.drawTransportsTracePlot(this.selectDataById(this.selectedId));
 				} else {
 					console.error("Failed to load transports data:", transportsData);
 				}
