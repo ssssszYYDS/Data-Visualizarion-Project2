@@ -28,7 +28,7 @@ export default {
 
     methods: {
         setId_null() {
-            console.log('set selectedId to \'1\'');
+            console.log('set selectedId to null');
             this.$emit('update:selectedId', null);
         },
 
