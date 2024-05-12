@@ -1,44 +1,3 @@
-<template>
-	<div class="wrapper">
-		<div class="calendar">
-			<button @click="toDetail" style="width: 100%; height: 100%;">
-				Calendar
-			</button>
-		</div>
-		<div id="chart" class="map">
-
-		</div>
-		<div class="timeline">
-			<div class="time-point" @mousedown="startDrag" @mouseup="stopDrag"></div>
-		</div>
-		<div class="under-timeline-plot">
-			<button @click="toDetail" style="width: 100%; height: 100%;">
-				Under-Timeline-Plot
-			</button>
-		</div>
-		<div class="scatter-plot">
-			<button @click="toDetail" style="width: 100%; height: 100%;">
-				Scatter-Plot
-			</button>
-		</div>
-		<div class="daily-life-plot">
-			<button @click="toDetail" style="width: 100%; height: 100%;">
-				Daily-Life-Plot
-			</button>
-		</div>
-		<div class="overview">
-			<button @click="toDetail" style="width: 100%; height: 100%;">
-				Overview
-			</button>
-		</div>
-		<!-- <div class="request">
-			<button @click="renderBuildings" style="width: 100%; height: 100%;">
-				Render buildings
-			</button>
-		</div> -->
-	</div>
-</template>
-
 <script>
 import { useRouter } from 'vue-router';
 import HttpHelper from '../../common/utils/axios_helper';
@@ -46,7 +5,6 @@ import Urls from '../../common/urls/index';
 
 export default {
 	name: 'Dashboard',
-
 	data() {
 		return {
 			svg: null, // 保存SVG引用以便重新绘制
@@ -66,8 +24,9 @@ export default {
 		window.addEventListener('resize', this.redrawBuildings);
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('resize', this.redrawBuildings);
+		this.removeSvg();
 	},
 
 	methods: {
@@ -88,9 +47,7 @@ export default {
 		},
 
 		drawBuildings(data) {
-			if (this.svg) {
-				this.svg.remove();
-			}
+			this.removeSvg();
 
 			const coordinates = data.flatMap(d => d.location.split(", ").map(point => {
 				const [x, y] = point.split(" ").map(parseFloat);
@@ -152,6 +109,13 @@ export default {
 				this.drawBuildings(this.buildings); // 重新绘制建筑物
 		},
 
+		removeSvg() {
+			if (this.svg) {
+				this.svg.remove();
+				this.svg = null;
+			}
+		},
+
 		// date format: '2023-03-03', range: '2022-03-01' to '2023-05-24'
 		async initTransports(date) {
 			try {
@@ -159,7 +123,7 @@ export default {
 
 				var parseTime = d3.timeParse('%Y-%m-%d %H:%M:%S');
 				var formatTime = d3.timeFormat('%Y-%m-%d %H:%M:%S');
-				// Parse the time and calculate average speed
+				// Parse the time
 				res.forEach(function (d) {
 					d.timeStamp = parseTime(d.day + ' ' + d.time);
 					d.timeStampFloat = d.timeStamp.getTime();
@@ -178,7 +142,7 @@ export default {
 				console.log("transports data: ");
 				console.log(this.transports);
 				if (res != null) {
-					this.drawTimeline(res);
+					this.drawTimeline();
 				} else {
 					console.error("Failed to load transports data:", res);
 				}
@@ -187,7 +151,7 @@ export default {
 			}
 		},
 
-		drawTimeline(data) {
+		drawTimeline() {
 			if (this.timeline) {
 				this.timeline.remove();
 			}
@@ -206,8 +170,6 @@ export default {
 				.style("height", "100%")
 				.style("background-color", "blue");
 
-			const width = d3.select("#chart").node().getBoundingClientRect().width;
-
 			var dragBehavior = d3.drag()
 				.on("drag", (event) => {
 					var startTime = new Date().getTime();
@@ -215,11 +177,7 @@ export default {
 
 					var x = event.x;
 					var max_x = this.timeline.node().getBoundingClientRect().width - this.handle.node().getBoundingClientRect().width;
-					if (x < 0) {
-						x = 0;
-					} else if (x > max_x) {
-						x = max_x;
-					}
+					x = Math.max(0, Math.min(x, max_x));
 					this.handle.style("left", x + "px");
 
 					var curTime = x / max_x * (this.timeScale.range()[1] - this.timeScale.range()[0]) + this.timeScale.range()[0];
@@ -292,57 +250,11 @@ export default {
 </script>
 
 
-<style scoped>
-.wrapper {
-	display: grid;
-	grid-template-columns: repeat(20, 1fr);
-	grid-template-rows: repeat(20, 2.8vh);
-	gap: 10px;
-	height: 100%;
-	width: 100%;
-}
 
-.calendar {
-	grid-area: 1 / 1 / 16 / 5;
-}
-
-.map {
-	grid-area: 1 / 5 / 39 / 17;
-}
-
-.scatter-plot {
-	grid-area: 1 / 17 / 9 / 21;
-}
-
-.overview {
-	grid-area: 16 / 1 / 56 / 5;
-}
-
-.timeline {
-	grid-area: 39 / 5 / 41 / 17;
-}
-
-.under-timeline-plot {
-	grid-area: 41 / 5 / 56 / 17;
-}
-
-
-.daily-life-plot {
-	grid-area: 9 / 17 / 56 / 21;
-}
-
-.request {
-	grid-area: 1 / 1 / 2 / 2;
-}
-</style>
 
 
 
 <!-- <script setup>
-
-import { useRouter } from 'vue-router';
-import HttpHelper from '../../common/utils/axios_helper';
-import Urls from '../../common/urls/index';
 
 const router = useRouter();
 const toDetail = async () => {
