@@ -209,6 +209,7 @@ export default {
 				if (res != null) {
 					this.drawTimeline();
 
+					// 测试绘制轨迹图
 					console.log("data selected by id: ", 25);
 					this.drawTransportsTracePlot(this.selectDataById(25));
 				} else {
@@ -224,6 +225,7 @@ export default {
 				this.timeline.remove();
 			}
 
+			// 设置时间轴和时间轴滑块
 			this.timeline = d3.select(".timeline")
 				.attr("class", "timeline")
 				.style("width", "100%")
@@ -238,6 +240,7 @@ export default {
 				.style("height", "100%")
 				.style("background-color", "blue");
 
+			// 绘制时间标签
 			this.curRealTime = d3.timeFormat('%Y-%m-%d %H:%M:%S')(new Date(this.timeScale.range()[0]));
 			this.svg.append("text")
 				.attr("x", "95%")
@@ -247,6 +250,7 @@ export default {
 				.style("font-size", "30px")
 				.text(this.curRealTime);
 
+			// 定义拖拽行为
 			var dragBehavior = d3.drag()
 				.on("drag", (event) => {
 					var startTime = new Date().getTime();
@@ -314,7 +318,7 @@ export default {
 
 		drawTransportsScatterPlot(selectData) {
 			this.clearTransportsScatterPlot();
-			// Draw the scatter plot
+			// 画散点图
 			this.svg.selectAll("circle")
 				.data(selectData)
 				.enter()
@@ -368,7 +372,7 @@ export default {
 				.attr("marker-end", "url(#arrowhead)");
 
 
-			// Draw circles according to the stay time
+			// 根据停留时间绘制圆圈
 			var stayTime = 0;
 			var lastData = selectData[0];
 			selectData.forEach((data) => {
