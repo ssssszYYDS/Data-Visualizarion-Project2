@@ -69,6 +69,10 @@ import Mapcomponent from './modules/home/index.vue';
   grid-area: 1 / 5 / 39 / 17;
 }
 
+.clock {
+  grid-area: 31 / 14 / 38 / 16;
+}
+
 .scatter-plot {
   grid-area: 1 / 17 / 9 / 21;
 }

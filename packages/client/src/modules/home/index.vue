@@ -1,12 +1,16 @@
+<!-- index.vue -->
+
+
 <script>
 import { useRouter } from 'vue-router';
 import HttpHelper from '../../common/utils/axios_helper';
 import Urls from '../../common/urls/index';
 
 export default {
-	name: 'Dashboard',
+	name: 'Mapcomponent',
 	data() {
 		return {
+			date: '2023-03-03',
 			svg: null, // 保存SVG引用以便重新绘制
 			buildings: null, // 保存建筑物数据
 			transports: null, // 保存交通数据
@@ -14,12 +18,15 @@ export default {
 			yScale: null,
 			speedColorScale: null,
 			timeScale: null,
+			curTime: null,
+			rellativeDay: null,
+			curRealTime: null,
 		};
 	},
 
 	mounted() {
 		this.initBuildings();
-		this.initTransports('2023-03-03');
+		this.initTransports(this.date);
 
 		window.addEventListener('resize', this.redrawBuildings);
 	},
@@ -121,9 +128,8 @@ export default {
 			try {
 				const res = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/Transports/transports_' + date + '.csv' });
 
-				var parseTime = d3.timeParse('%Y-%m-%d %H:%M:%S');
-				var formatTime = d3.timeFormat('%Y-%m-%d %H:%M:%S');
 				// Parse the time
+				var parseTime = d3.timeParse('%Y-%m-%d %H:%M:%S');
 				res.forEach(function (d) {
 					d.timeStamp = parseTime(d.day + ' ' + d.time);
 					d.timeStampFloat = d.timeStamp.getTime();
@@ -170,6 +176,15 @@ export default {
 				.style("height", "100%")
 				.style("background-color", "blue");
 
+			this.curRealTime = d3.timeFormat('%Y-%m-%d %H:%M:%S')(new Date(this.timeScale.range()[0]));
+			this.svg.append("text")
+				.attr("x", "95%")
+				.attr("y", "95%")
+				.attr("text-anchor", "end")
+				.attr("dominant-baseline", "bottom")
+				.style("font-size", "30px")
+				.text(this.curRealTime);
+
 			var dragBehavior = d3.drag()
 				.on("drag", (event) => {
 					var startTime = new Date().getTime();
@@ -180,9 +195,13 @@ export default {
 					x = Math.max(0, Math.min(x, max_x));
 					this.handle.style("left", x + "px");
 
-					var curTime = x / max_x * (this.timeScale.range()[1] - this.timeScale.range()[0]) + this.timeScale.range()[0];
-					var selectData = this.selectDataByCurTime(curTime);
+					this.rellativeDay = x / max_x;
+					this.curTime = x / max_x * (this.timeScale.range()[1] - this.timeScale.range()[0]) + this.timeScale.range()[0];
+					var selectData = this.selectDataByCurTime(this.curTime);
 					this.drawTransportsScatterPlot(selectData);
+
+					this.svg.selectAll("text")
+						.text(this.curRealTime);
 
 					console.log("drag consuming time: " + (new Date().getTime() - startTime) + "ms");
 				});
@@ -198,7 +217,6 @@ export default {
 				if (parseFloat(d3.min(this.transports, d => d.timeStampFloat > curTime ? d.timeStampFloat : Infinity)) == Infinity) {
 					leftMaxTimeStamp = parseFloat(d3.max(this.transports, d => d.timeStampFloat < curTime ? d.timeStampFloat : -Infinity));
 					rightMinTimeStamp = parseFloat(d3.min(this.transports, d => d.timeStampFloat >= curTime ? d.timeStampFloat : Infinity));
-					console.log("case1" + leftMaxTimeStamp + " " + rightMinTimeStamp)
 				} else {
 					leftMaxTimeStamp = parseFloat(d3.max(this.transports, d => d.timeStampFloat <= curTime ? d.timeStampFloat : -Infinity));
 					rightMinTimeStamp = parseFloat(d3.min(this.transports, d => d.timeStampFloat > curTime ? d.timeStampFloat : Infinity));
@@ -207,8 +225,9 @@ export default {
 			var leftSelectedData = this.transports.filter(d => d.timeStampFloat === leftMaxTimeStamp);
 			var rightSelectedData = this.transports.filter(d => d.timeStampFloat === rightMinTimeStamp);
 			var curRelativeTime = (curTime - leftMaxTimeStamp) / (rightMinTimeStamp - leftMaxTimeStamp);
-			var timeFormat = d3.timeFormat('%Y-%m-%d %H:%M:%S');
 
+			var timeFormat = d3.timeFormat('%Y-%m-%d %H:%M:%S');
+			this.curRealTime = timeFormat(new Date(curTime));
 			var selectData = leftSelectedData.filter(leftData =>
 				rightSelectedData.some(rightData => rightData.participantId === leftData.participantId)
 			).map(leftData => {
@@ -216,11 +235,13 @@ export default {
 				var tempData = {};
 				tempData.participantId = leftData.participantId;
 				tempData.timeStampFloat = curTime;
-				tempData.timeStamp = timeFormat(new Date(curTime));
+				tempData.timeStamp = this.curRealTime;
 				tempData.loc_x = (1 - curRelativeTime) * leftData.loc_x + curRelativeTime * rightData.loc_x;
 				tempData.loc_y = (1 - curRelativeTime) * leftData.loc_y + curRelativeTime * rightData.loc_y;
-				// tempData.speed = Math.sqrt((rightData.loc_x - leftData.loc_x) ** 2 + (rightData.loc_y - leftData.loc_y) ** 2);
-				tempData.speed = Math.abs(rightData.loc_x - leftData.loc_x) + Math.abs(rightData.loc_y - leftData.loc_y);
+				// speed = sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2)
+				// tempData.speed = Math.sqrt((leftData.loc_x - rightData.loc_x) ** 2 + (leftData.loc_y - rightData.loc_y) ** 2);
+				// speed = |x1 - x2| + |y1 - y2|
+				tempData.speed = Math.abs(leftData.loc_x - rightData.loc_x) + Math.abs(leftData.loc_y - rightData.loc_y);
 				return tempData;
 			});
 			return selectData;
