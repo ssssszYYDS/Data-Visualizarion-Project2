@@ -10,9 +10,10 @@ export default {
 	name: 'Mapcomponent',
 	data() {
 		return {
-			date: '2023-03-03',
+			date: '2022-03-03',
 			svg: null, // 保存SVG引用以便重新绘制
 			buildings: null, // 保存建筑物数据
+			initBuildingsOpacitySplit: 0.1,
 			transports: null, // 保存交通数据
 			xScale: null,
 			yScale: null,
@@ -39,18 +40,71 @@ export default {
 	methods: {
 		async initBuildings() {
 			try {
-				const res = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/building.csv' });
+				const buildings = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/building.csv' });
+
+				// await this.initBuildingsOpacityByApartment(buildings, this.initBuildingsOpacitySplit); // 根据租金设置建筑物的透明度
+				await this.initBuildingsOpacityByCheckin(buildings, this.initBuildingsOpacitySplit); // 根据checkin设置建筑物的透明度
+
+				this.buildings = buildings
+
 				console.log("buildings data: ");
-				console.log(res);
-				this.buildings = res
-				if (res != null) {
-					this.drawBuildings(res);
+				console.log(buildings);
+
+				// console.log("apartments data: ");
+				// console.log(apartments);
+
+				if (buildings != null) {
+					this.drawBuildings(buildings);
 				} else {
-					console.error("Failed to load buildings data:", res);
+					console.error("Failed to load buildings data:", buildings);
 				}
 			} catch (error) {
 				console.error("Failed to load buildings data:", error);
 			}
+		},
+
+		async initBuildingsOpacityByApartment(buildings, split) {
+			// 根据租金设置建筑物的透明度
+			const apartments = await HttpHelper.post(Urls.getCSVData, { path: 'Attributes/Apartments.csv' });
+			const rents = apartments.map(apt => parseFloat(apt.rentalCost));
+			const minRent = Math.min(...rents);
+			const maxRent = Math.max(...rents);
+
+			console.log("minRent: " + minRent);
+			console.log("maxRent: " + maxRent);
+
+			buildings.forEach((building) => {
+				const apartment = apartments.find((apt) => apt.buildingId === building.buildingId);
+				if (apartment) {
+					const rent = parseFloat(apartment.rentalCost);
+					const opacity = (rent - minRent) / (maxRent - minRent) * (1 - split) + split;
+					building.opacity = opacity;
+				} else {
+					building.opacity = 100;
+				}
+			});
+		},
+
+		async initBuildingsOpacityByCheckin(buildings, split) {
+			// 根据checkin设置建筑物的透明度
+			const checkinJournalCounts = await HttpHelper.post(Urls.getCSVData, { path: 'Journals/CheckinJournalCounts.csv' });
+			var maxJournals = 0;
+			Object.keys(checkinJournalCounts).forEach((key) => {
+				maxJournals = Math.max(maxJournals, parseInt(checkinJournalCounts[key].count))
+			});
+			console.log("maxJournals: " + maxJournals);
+			const k = -2500;
+			const a = (-(1 - split) * maxJournals + Math.sqrt(((1 - split) * maxJournals) ** 2 - 4 * (1 - split) * maxJournals * k)) / (1 - split) / 2;
+			const b = split - k / a;
+			buildings.forEach((building) => {
+				if (checkinJournalCounts[building.buildingId] == null)
+					building.opacity = 0.3;
+				else {
+					const number = parseInt(checkinJournalCounts[building.buildingId].count);
+					// building.opacity = number / maxJournals * 0.7 + 0.3;
+					building.opacity = k / (number + a) + b;
+				}
+			});
 		},
 
 		drawBuildings(data) {
@@ -73,11 +127,12 @@ export default {
 			const picture_range = 1.0;
 
 			const buildingType2color = {
-				"Commercial": "lightblue",
-				"Residental": "lightgreen",
-				"School": "lightcoral",
-				"Other": "yellow"
-			}
+				"Commercial": "#5F9EA0",   // 兰青色
+				"Residental": "#8B4513",   // 红棕色
+				"School": "#32CD32",       // 草绿色
+				"Other": "#FFFF00"         // 黄色
+			};
+
 
 			this.svg = d3.select("#chart").append("svg")
 				.attr("width", "100%")
@@ -101,8 +156,10 @@ export default {
 					return this.xScale(x) + " " + this.yScale(y);
 				}).join(" "))
 				.attr("fill", d => buildingType2color[d.buildingType])
+				.attr("fill-opacity", d => d.opacity)
 				.attr("stroke", "black")
 				.attr("stroke-width", 0.8)
+				.attr("stroke-opacity", d => d.opacity)
 				.on("mouseover", (event, d) => {
 					d3.select(event.currentTarget).attr("fill", "orange").attr("stroke-width", 1.2);
 				})
@@ -177,6 +234,7 @@ export default {
 				.style("background-color", "blue");
 
 			this.curRealTime = d3.timeFormat('%Y-%m-%d %H:%M:%S')(new Date(this.timeScale.range()[0]));
+			console.log("curRealTime: " + this.curRealTime);
 			this.svg.append("text")
 				.attr("x", "95%")
 				.attr("y", "95%")

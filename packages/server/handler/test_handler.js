@@ -58,17 +58,17 @@ class TestHandler {
     }
 
     static async getCSVData(req, res) {
-        console.log('getCSVData: ' + req.body.path);
+        // console.log('getCSVData: ' + req.body.path);
         try {
             var path = "./data/" + req.body.path;
-            console.log("whole path:", path);
+            console.log("get data path:", path);
             var csvData = await getCSVData(path); // 使用await等待异步函数完成
             var data = {
                 "code": 0,
                 "msg": "success",
                 "data": csvData
             };
-            console.log(data.data);
+            // console.log(data.data);
             res.json(data);
         } catch (e) {
             res.end("error ")
