@@ -1,5 +1,8 @@
+<!-- <template>
+
+</template> -->
+
 <script>
-import { useRouter } from 'vue-router';
 import HttpHelper from '../common/utils/axios_helper';
 import Urls from '../common/urls/index';
 
@@ -22,19 +25,20 @@ export default {
 
     mounted() {
         this.initRiverMap(this.date);
-        // window.addEventListener('resize', this.redrawRiverMap);
+    },
+
+    watch: {
+        date: function (newDate) {
+            this.initRiverMap(newDate); // 监听 date 的变化，并重新运行 initRiverMap 方法
+        }
     },
 
     beforeUnmount() {
-        // window.removeEventListener('resize', this.redrawRiverMap);
-        // this.removeSvg();
     },
 
     methods: {
         async initRiverMap(date) {
-            const riverData = await HttpHelper.post(Urls.getCSVData, {
-                path: `CSVData/Mode/mode_${date}.csv`,
-            });
+            const riverData = await HttpHelper.post(Urls.getCSVData, { path: `CSVData/Mode/mode_${date}.csv`, });
 
             this.riverData = riverData;
             console.log('riverMap data: ');
@@ -120,7 +124,7 @@ export default {
                 .style('fill', colorScale);
 
             legend.append('text')
-                .attr('x', "11%")
+                .attr('x', "11.3%")
                 .attr('y', "90%")
                 .attr('dy', '.35em')
                 .style('text-anchor', 'start')

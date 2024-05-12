@@ -1,24 +1,25 @@
-<script setup>
-import Mapcomponent from './modules/home/index.vue';
-// import GameCategoriesComponent from './components/GameCategories.vue';
-// import PicturesComponent from './components/Pictures.vue';
-// import BarChartComponent from './components/BarChart.vue';
-import RivermapComponent from './components/Rivermap.vue';
-// import FeatureClusterComponent from './components/FeatureCluster.vue';
-// import WordCloudComponent from './components/WordCloud.vue';
-// import FunCommentsComponent from './components/FunComments.vue';
-// import SaveComponent from './components/Save.vue';
+<!-- App.vue -->
 
-// const date = '2022-03-01';
-const date = '2022-03-05';
+<script setup>
+import { ref } from 'vue';
+import Mapcomponent from './modules/home/index.vue';
+import CategoriesComponent from './components/Categories.vue';
+import RivermapComponent from './components/Rivermap.vue';
+
+const date = ref('2022-03-01');
+// const date = ref('2022-03-05');
+
+const handleDateUpdate = (newDate) => {
+  date.value = newDate;
+}
+
 </script>
 
 <template>
   <div class="wrapper">
     <div class="calendar">
-      <button @click="toDetail" style="width: 100%; height: 100%;">
-        Calendar
-      </button>
+      <CategoriesComponent :date="date" @update:date="handleDateUpdate"></CategoriesComponent>
+      <p>当前日期：{{ date }}</p>
     </div>
     <div id="chart" class="map">
       <Mapcomponent :date="date"></Mapcomponent>
@@ -27,9 +28,6 @@ const date = '2022-03-05';
       <div class="time-point"></div>
     </div>
     <div id="river-chart" class="rivermap">
-      <!-- <button @click="toDetail" style="width: 100%; height: 100%;">
-        Under-Timeline-Plot
-      </button> -->
       <RivermapComponent :date="date"></RivermapComponent>
     </div>
     <div class="scatter-plot">
@@ -47,11 +45,6 @@ const date = '2022-03-05';
         Overview
       </button>
     </div>
-    <!-- <div class="request">
-      <button @click="renderBuildings" style="width: 100%; height: 100%;">
-        Render buildings
-      </button>
-    </div> -->
   </div>
 </template>
 

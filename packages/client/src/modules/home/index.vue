@@ -32,16 +32,18 @@ export default {
 		};
 	},
 
-	mounted() {
+	async mounted() {
 		this.initBuildings();
-		this.initTransports(this.date);
-
-		window.addEventListener('resize', this.redrawBuildings);
+		await this.initTransports(this.date);
+		this.drawTimeline();
 	},
 
-	beforeUnmount() {
-		window.removeEventListener('resize', this.redrawBuildings);
+	watch: {
+		date: function (newDate) {
+			this.initTransports(newDate);
+		}
 	},
+
 
 	methods: {
 		async initBuildings() {
@@ -170,11 +172,6 @@ export default {
 				});
 		},
 
-		redrawBuildings() {
-			if (this.buildings)
-				this.drawBuildings(this.buildings); // 重新绘制建筑物
-		},
-
 		removeSvg() {
 			if (this.svg) {
 				this.svg.remove();
@@ -185,11 +182,13 @@ export default {
 		// date format: '2023-03-03', range: '2022-03-01' to '2023-05-24'
 		async initTransports(date) {
 			try {
-				const res = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/Transports/transports_' + date + '.csv' });
+				const transportsData = await HttpHelper.post(Urls.getCSVData, { path: `CSVData/Transports/transports_${date}.csv` });
+				console.log("transports data: ");
+				console.log(transportsData);
 
 				// Parse the time
 				var parseTime = d3.timeParse('%Y-%m-%d %H:%M:%S');
-				res.forEach(function (d) {
+				transportsData.forEach(function (d) {
 					d.timeStamp = parseTime(d.day + ' ' + d.time);
 					d.timeStampFloat = d.timeStamp.getTime();
 				});
@@ -197,23 +196,23 @@ export default {
 				const width = d3.select("#chart").node().getBoundingClientRect().width;
 				this.timeScale = d3.scaleTime()
 					.domain([0, width])
-					.range(d3.extent(res.map(d => d.timeStampFloat)));
+					.range(d3.extent(transportsData.map(d => d.timeStampFloat)));
 
 				this.speedColorScale = d3.scaleLinear()
 					.domain([250, 350, 450])
 					.range(["red", "orange", "green"]);
 
-				this.transports = res
+				this.transports = transportsData
 				console.log("transports data: ");
 				console.log(this.transports);
-				if (res != null) {
-					this.drawTimeline();
+				if (transportsData != null) {
+					this.clearTransportsScatterPlot();
 
 					// 测试绘制轨迹图
 					console.log("data selected by id: ", 25);
 					this.drawTransportsTracePlot(this.selectDataById(25));
 				} else {
-					console.error("Failed to load transports data:", res);
+					console.error("Failed to load transports data:", transportsData);
 				}
 			} catch (error) {
 				console.error("Failed to load transports data:", error);
@@ -221,9 +220,7 @@ export default {
 		},
 
 		drawTimeline() {
-			if (this.timeline) {
-				this.timeline.remove();
-			}
+			this.clearTimeline();
 
 			// 设置时间轴和时间轴滑块
 			this.timeline = d3.select(".timeline")
@@ -251,7 +248,7 @@ export default {
 				.text(this.curRealTime);
 
 			// 定义拖拽行为
-			var dragBehavior = d3.drag()
+			this.handle.call(d3.drag()
 				.on("drag", (event) => {
 					var startTime = new Date().getTime();
 
@@ -269,8 +266,22 @@ export default {
 						.text(this.curRealTime);
 
 					console.log("drag consuming time: " + (new Date().getTime() - startTime) + "ms");
-				});
-			this.handle.call(dragBehavior);
+				}));
+		},
+
+		clearTimeline() {
+			console.log("clearTimeline");
+			if (this.svg)
+				this.svg.selectAll("text")
+					.remove();
+			if (this.timeline) {
+				this.timeline.remove();
+				this.timeline = null;
+			}
+			if (this.handle) {
+				this.handle.remove();
+				this.handle = null;
+			}
 		},
 
 
@@ -332,8 +343,9 @@ export default {
 		},
 
 		clearTransportsScatterPlot() {
-			this.svg.selectAll("circle.scatter-point")
-				.remove();
+			if (this.svg)
+				this.svg.selectAll("circle.scatter-point")
+					.remove();
 		},
 
 		drawTransportsTracePlot(selectData) {
@@ -378,6 +390,7 @@ export default {
 			selectData.forEach((data) => {
 				stayTime = (data.timeStampFloat - lastData.timeStampFloat) / 1000;
 				this.svg.append("circle")
+					.attr("class", "trace-point")
 					.attr("cx", this.xScale(data.loc_x))
 					.attr("cy", this.yScale(data.loc_y))
 					.attr("r", (d) => { return (stayTime / 20) ** 0.5; })
@@ -389,6 +402,8 @@ export default {
 
 		clearTransportsTracePlot() {
 			this.svg.selectAll("line.trace-line")
+				.remove();
+			this.svg.selectAll("circle.trace-point")
 				.remove();
 		},
 	}
