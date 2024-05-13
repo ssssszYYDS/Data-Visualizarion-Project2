@@ -388,7 +388,7 @@ export default {
 
 			// 定义箭头标记
 			this.svg.append("defs").append("marker")
-				.attr("id", "arrowhead")
+				.attr("id", `arrowhead${idGroup}`)
 				.attr("viewBox", "0 0 10 10")
 				.attr("refX", 8)
 				.attr("refY", 5)
@@ -412,7 +412,7 @@ export default {
 				.attr("y2", (d, i) => { return this.yScale(selectData[i + 1].loc_y); })
 				.attr("stroke", arrowColor)
 				.attr("stroke-width", 1)
-				.attr("marker-end", "url(#arrowhead)");
+				.attr("marker-end", `url(#arrowhead${idGroup})`);
 
 			// 根据停留时间绘制圆圈
 			var stayTime = 0;
