@@ -47,10 +47,6 @@ const handleSelectedIdUpdate = (newId) => {
 		selectedId2.value = newId;
 		nextChangeId = 1;
 	}
-	if (selectedId1.value === 'null')
-		selectedId1.value = 'null';
-	if (selectedId2.value === 'null')
-		selectedId2.value = 'null';
 }
 
 const updateSelectedIdByIndex = (newId, index) => {
