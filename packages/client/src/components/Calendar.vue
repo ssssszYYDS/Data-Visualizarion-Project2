@@ -1,4 +1,4 @@
-<!-- Categories.vue -->
+<!-- Calendar.vue -->
 
 <template>
     <button @click="setDate1" style="width: 100%; height: 30%;">
@@ -11,7 +11,7 @@
 
 <script>
 export default {
-    name: 'Categories',
+    name: 'Calendar',
 
     props: {
         date: {
