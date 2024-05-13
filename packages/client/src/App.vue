@@ -14,6 +14,7 @@ const selectedId2 = ref(null);
 const handleDateUpdate = (newDate) => {
 	date.value = newDate;
 }
+
 const handleSelectedIdUpdate = (newId) => {
 	if (newId === null) {
 		if (selectedId1.value == null)
@@ -37,6 +38,15 @@ const handleSelectedIdUpdate = (newId) => {
 		}
 }
 
+const updateSelectedIdByIndex = (newId, index) => {
+	if (index == 1)
+		selectedId1.value = newId;
+	else if (index == 2)
+		selectedId2.value = newId;
+	else
+		console.error('Invalid selectedId index: ', index);
+}
+
 </script>
 
 <template>
@@ -57,7 +67,7 @@ const handleSelectedIdUpdate = (newId) => {
 		</div>
 		<div class="scatter-plot">
 			<ClusterGraphComponent :selectedId1="selectedId1" :selectedId2="selectedId2"
-				@update:selectedId="handleSelectedIdUpdate">
+				@update:selectedId="handleSelectedIdUpdate" @update:selectedIdByIndex="updateSelectedIdByIndex">
 			</ClusterGraphComponent>
 		</div>
 		<div class="daily-life-plot">
