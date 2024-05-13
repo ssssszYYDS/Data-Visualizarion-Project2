@@ -378,7 +378,13 @@ export default {
 			// Draw the trace plot with arrows
 			this.clearTransportsTracePlot(idGroup);
 
-			const arrowColor = "black";
+			const idGroup2Color = {
+				1: { "arrowColor": "black", "circleColor": "blue" },
+				2: { "arrowColor": "red", "circleColor": "green" },
+			};
+
+			const arrowColor = idGroup2Color[idGroup].arrowColor;
+			const circleColor = idGroup2Color[idGroup].circleColor;
 
 			// 定义箭头标记
 			this.svg.append("defs").append("marker")
@@ -408,9 +414,6 @@ export default {
 				.attr("stroke-width", 1)
 				.attr("marker-end", "url(#arrowhead)");
 
-
-
-
 			// 根据停留时间绘制圆圈
 			var stayTime = 0;
 			var lastData = selectData[0];
@@ -421,7 +424,7 @@ export default {
 					.attr("cx", this.xScale(data.loc_x))
 					.attr("cy", this.yScale(data.loc_y))
 					.attr("r", (d) => { return (stayTime / 20) ** 0.5; })
-					.attr("fill", "blue")
+					.attr("fill", circleColor)
 					.attr("fill-opacity", 0.3)
 				lastData = data;
 			});
