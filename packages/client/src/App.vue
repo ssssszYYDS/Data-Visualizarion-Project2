@@ -50,10 +50,14 @@ const handleSelectedIdUpdate = (newId) => {
 }
 
 const updateSelectedIdByIndex = (newId, index) => {
-	if (index == 1)
+	if (index == 1) {
 		selectedId1.value = newId;
-	else if (index == 2)
+		nextChangeId = newId == null ? 1 : 2;
+	}
+	else if (index == 2) {
 		selectedId2.value = newId;
+		nextChangeId = newId == null ? 2 : 1;
+	}
 	else
 		console.error('Invalid selectedId index: ', index);
 }
