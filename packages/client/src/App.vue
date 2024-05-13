@@ -3,7 +3,7 @@
 <script setup>
 import { ref } from 'vue';
 import Mapcomponent from './modules/home/index.vue';
-import CategoriesComponent from './components/Categories.vue';
+import CalendarComponent from './components/Calendar.vue';
 import ClusterGraphComponent from './components/ClusterGraph.vue';
 import RivermapComponent from './components/Rivermap.vue';
 
@@ -52,8 +52,8 @@ const updateSelectedIdByIndex = (newId, index) => {
 <template>
 	<div class="wrapper">
 		<div class="calendar">
-			<CategoriesComponent :date="date" @update:date="handleDateUpdate">
-			</CategoriesComponent>
+			<CalendarComponent :date="date" @update:date="handleDateUpdate">
+			</CalendarComponent>
 			<p>当前日期：{{ date }}</p>
 		</div>
 		<div id="chart" class="map">
