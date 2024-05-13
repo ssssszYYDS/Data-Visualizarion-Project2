@@ -14,7 +14,11 @@ export default {
 			type: String,
 			required: true,
 		},
-		selectedId: {
+		selectedId1: {
+			type: String,
+			required: true,
+		},
+		selectedId2: {
 			type: String,
 			required: true,
 		},
@@ -47,8 +51,11 @@ export default {
 			await this.initTransports(newDate);
 			this.drawTimeText();
 		},
-		selectedId: async function (newId) {
-			this.drawTransportsTracePlot(this.selectDataById(newId));
+		selectedId1: async function (newId) {
+			this.drawTransportsTracePlot(this.selectDataById(newId), 1);
+		},
+		selectedId2: async function (newId) {
+			this.drawTransportsTracePlot(this.selectDataById(newId), 2);
 		},
 	},
 
@@ -217,8 +224,10 @@ export default {
 					this.clearTransportsScatterPlot();
 
 					// 测试绘制轨迹图
-					console.log("data selected by id: ", this.selectedId);
-					this.drawTransportsTracePlot(this.selectDataById(this.selectedId));
+					console.log("data selected 1 by id: ", this.selectedId1);
+					this.drawTransportsTracePlot(this.selectDataById(this.selectedId1), 1);
+					console.log("data selected 2 by id: ", this.selectedId2);
+					this.drawTransportsTracePlot(this.selectDataById(this.selectedId2), 2);
 				} else {
 					console.error("Failed to load transports data:", transportsData);
 				}
@@ -365,9 +374,9 @@ export default {
 					.remove();
 		},
 
-		drawTransportsTracePlot(selectData) {
+		drawTransportsTracePlot(selectData, idGroup) {
 			// Draw the trace plot with arrows
-			this.clearTransportsTracePlot();
+			this.clearTransportsTracePlot(idGroup);
 
 			const arrowColor = "black";
 
@@ -385,20 +394,21 @@ export default {
 				.append("path")
 				.attr("d", "M 0 0 L 10 5 L 0 10 L 4 5 z");
 
-			// 绘制线条并添加箭头标记
-			this.svg.selectAll("line")
-				.data(selectData.slice(0, selectData.length - 1))
+			// 绘制新的线条并添加箭头标记
+			this.svg.selectAll(`line.trace-line${idGroup}`)
+				.data(selectData.slice(0, -1))
 				.enter()
 				.append("line")
-				.attr("class", "trace-line")
-				.attr("x1", (d, i) => { return this.xScale(d.loc_x); })
-				.attr("y1", (d, i) => { return this.yScale(d.loc_y); })
+				.attr("class", `trace-line${idGroup}`)
+				.attr("x1", (d) => { return this.xScale(d.loc_x); })
+				.attr("y1", (d) => { return this.yScale(d.loc_y); })
 				.attr("x2", (d, i) => { return this.xScale(selectData[i + 1].loc_x); })
 				.attr("y2", (d, i) => { return this.yScale(selectData[i + 1].loc_y); })
 				.attr("stroke", arrowColor)
 				.attr("stroke-width", 1)
-				.attr("stroke-opacity", 1)
 				.attr("marker-end", "url(#arrowhead)");
+
+
 
 
 			// 根据停留时间绘制圆圈
@@ -407,7 +417,7 @@ export default {
 			selectData.forEach((data) => {
 				stayTime = (data.timeStampFloat - lastData.timeStampFloat) / 1000;
 				this.svg.append("circle")
-					.attr("class", "trace-point")
+					.attr("class", `trace-point${idGroup}`)
 					.attr("cx", this.xScale(data.loc_x))
 					.attr("cy", this.yScale(data.loc_y))
 					.attr("r", (d) => { return (stayTime / 20) ** 0.5; })
@@ -417,10 +427,10 @@ export default {
 			});
 		},
 
-		clearTransportsTracePlot() {
-			this.svg.selectAll("line.trace-line")
+		clearTransportsTracePlot(idGroup) {
+			this.svg.selectAll(`line.trace-line${idGroup}`)
 				.remove();
-			this.svg.selectAll("circle.trace-point")
+			this.svg.selectAll(`circle.trace-point${idGroup}`)
 				.remove();
 		},
 	}

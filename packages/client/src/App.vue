@@ -8,94 +8,115 @@ import ClusterGraphComponent from './components/ClusterGraph.vue';
 import RivermapComponent from './components/Rivermap.vue';
 
 const date = ref('2022-03-01');
-const selectedId = ref(null);
+const selectedId1 = ref(null);
+const selectedId2 = ref(null);
 
 const handleDateUpdate = (newDate) => {
-  date.value = newDate;
+	date.value = newDate;
 }
 const handleSelectedIdUpdate = (newId) => {
-  selectedId.value = newId;
+	if (newId === null) {
+		if (selectedId1.value == null)
+			selectedId2.value = null;
+		else
+			selectedId1.value = null;
+		return;
+	}
+	if (selectedId1.value == newId)
+		selectedId1.value = null;
+	else if (selectedId2.value == newId)
+		selectedId2.value = null;
+	else
+		if (selectedId1.value === null) {
+			selectedId1.value = newId;
+		} else if (selectedId2.value === null) {
+			selectedId2.value = newId;
+		} else {
+			selectedId1.value = selectedId2.value;
+			selectedId2.value = newId;
+		}
 }
 
 </script>
 
 <template>
-  <div class="wrapper">
-    <div class="calendar">
-      <CategoriesComponent :date="date" @update:date="handleDateUpdate">
-      </CategoriesComponent>
-      <p>当前日期：{{ date }}</p>
-    </div>
-    <div id="chart" class="map">
-      <Mapcomponent :date="date" :selectedId="selectedId"></Mapcomponent>
-    </div>
-    <div class="timeline">
-      <div class="time-point"></div>
-    </div>
-    <div id="river-chart" class="rivermap">
-      <RivermapComponent :date="date"></RivermapComponent>
-    </div>
-    <div class="scatter-plot">
-      <ClusterGraphComponent :selectedId="selectedId" @update:selectedId="handleSelectedIdUpdate">
-      </ClusterGraphComponent>
-    </div>
-    <div class="daily-life-plot">
-      <button @click="toDetail" style="width: 100%; height: 100%;">
-        Daily-Life-Plot
-      </button>
-    </div>
-    <div class="overview">
-      <button @click="toDetail" style="width: 100%; height: 100%;">
-        Overview
-      </button>
-    </div>
-  </div>
+	<div class="wrapper">
+		<div class="calendar">
+			<CategoriesComponent :date="date" @update:date="handleDateUpdate">
+			</CategoriesComponent>
+			<p>当前日期：{{ date }}</p>
+		</div>
+		<div id="chart" class="map">
+			<Mapcomponent :date="date" :selectedId1="selectedId1" :selectedId2="selectedId2"></Mapcomponent>
+		</div>
+		<div class="timeline">
+			<div class="time-point"></div>
+		</div>
+		<div id="river-chart" class="rivermap">
+			<RivermapComponent :date="date"></RivermapComponent>
+		</div>
+		<div class="scatter-plot">
+			<ClusterGraphComponent :selectedId1="selectedId1" :selectedId2="selectedId2"
+				@update:selectedId="handleSelectedIdUpdate">
+			</ClusterGraphComponent>
+		</div>
+		<div class="daily-life-plot">
+			<button @click="toDetail" style="width: 100%; height: 100%;">
+				Daily-Life-Plot
+			</button>
+		</div>
+		<div class="overview">
+			<button @click="toDetail" style="width: 100%; height: 100%;">
+				Overview
+			</button>
+		</div>
+	</div>
 </template>
 
 <style scoped>
 .wrapper {
-  display: grid;
-  grid-template-columns: repeat(20, 1fr);
-  grid-template-rows: repeat(20, 2.8vh);
-  gap: 10px;
-  height: 100%;
-  width: 100%;
+	display: grid;
+	grid-template-columns: repeat(20, 1fr);
+	grid-template-rows: repeat(20, 2.8vh);
+	gap: 10px;
+	height: 100%;
+	width: 100%;
 }
 
 .calendar {
-  grid-area: 1 / 1 / 10 / 5;
+	grid-area: 1 / 1 / 10 / 5;
 }
 
 .map {
-  grid-area: 1 / 5 / 39 / 17;
+	grid-area: 1 / 5 / 39 / 17;
 }
 
 .clock {
-  grid-area: 31 / 14 / 38 / 16;
+	grid-area: 31 / 14 / 38 / 16;
 }
 
 .scatter-plot {
-  grid-area: 1 / 17 / 9 / 21;
+	grid-area: 1 / 17 / 9 / 21;
 }
 
 .overview {
-  grid-area: 10 / 1 / 56 / 5;
+	grid-area: 10 / 1 / 56 / 5;
 }
 
 .timeline {
-  grid-area: 39 / 5 / 41 / 17;
+	grid-area: 39 / 5 / 41 / 17;
 }
 
 .rivermap {
-  grid-area: 41 / 5 / 56 / 17;
+	grid-area: 41 / 5 / 56 / 17;
 }
 
 
 .daily-life-plot {
-  grid-area: 9 / 17 / 56 / 21;
+	grid-area: 9 / 17 / 56 / 21;
 }
 
 .request {
-  grid-area: 1 / 1 / 2 / 2;
+	grid-area: 1 / 1 / 2 / 2;
 }
 </style>
