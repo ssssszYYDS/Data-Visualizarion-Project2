@@ -40,8 +40,8 @@ export default {
 			try {
 				const centers = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/Clusters/center.csv' });
 				this.alldata = centers;
-				console.log("centers data: ");
-				console.log(centers);
+				// console.log("centers data: ");
+				// console.log(centers);
 				this.chartData1 = this.generateChartData(this.alldata, this.initlabel1);
 				this.chartData2 = this.generateChartData(this.alldata, this.initlabel2);
 				this.renderChart(1);

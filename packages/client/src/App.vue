@@ -7,7 +7,8 @@ import CalendarComponent from './components/Calendar.vue';
 import ClusterGraphComponent from './components/ClusterGraph.vue';
 import Piecomponent from './components/piechart.vue';
 import RivermapComponent from './components/Rivermap.vue';
-
+import RountineComponent from './components/routine.vue';
+import OverviewComponent from './components/overview.vue';
 const date = ref('2022-03-01');
 const handleDateUpdate = (newDate) => {
 	date.value = newDate;
@@ -93,10 +94,15 @@ const updateSelectedIdByIndex = (newId, index) => {
 				<Piecomponent></Piecomponent>
 			</button>
 		</div>
-		<div class="overview">
+		<div class="routine">
 			<button @click="toDetail" style="width: 100%; height: 100%;">
-				Overview
+				<RountineComponent></RountineComponent>
 			</button>
+		</div>
+		<div class="overview">
+			
+			<OverviewComponent></OverviewComponent>
+
 		</div>
 	</div>
 </template>
@@ -140,8 +146,13 @@ const updateSelectedIdByIndex = (newId, index) => {
 }
 
 
+.routine {
+  grid-area: 39 / 17 / 56 / 21;
+}
+
+
 .daily-life-plot {
-	grid-area: 9 / 17 / 56 / 21;
+  grid-area: 9 / 17 / 39 / 21;
 }
 
 .request {
