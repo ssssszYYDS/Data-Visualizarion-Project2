@@ -44,28 +44,24 @@ export default {
     },
 
     mounted() {
-        document.getElementById('selectedId1').innerText = this.selectedId1 == null ? 'null' : this.selectedId1;
-        document.getElementById('selectedId2').innerText = this.selectedId2 == null ? 'null' : this.selectedId2;
+        document.getElementById('selectedId1').innerText = this.selectedId1;
+        document.getElementById('selectedId2').innerText = this.selectedId2;
     },
 
     methods: {
         setId_null() {
-            console.log('set selectedId to null');
-            this.$emit('update:selectedId', null);
+            this.$emit('update:selectedId', 'null');
         },
 
         setId1() {
-            console.log('set selectedId to \'1\'');
             this.$emit('update:selectedId', '1');
         },
 
         setId2() {
-            console.log('set selectedId to \'25\'');
             this.$emit('update:selectedId', '25');
         },
 
         setId666() {
-            console.log('set selectedId to \'666\'');
             this.$emit('update:selectedId', '666');
         },
     }

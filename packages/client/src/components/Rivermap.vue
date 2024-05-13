@@ -1,6 +1,5 @@
-<!-- <template>
-
-</template> -->
+<template>
+</template>
 
 <script>
 import HttpHelper from '../common/utils/axios_helper';

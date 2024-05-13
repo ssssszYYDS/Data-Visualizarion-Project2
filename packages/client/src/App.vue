@@ -13,31 +13,33 @@ const handleDateUpdate = (newDate) => {
 }
 
 
-const selectedId1 = ref(null);
-const selectedId2 = ref(null);
+const selectedId1 = ref('null');
+const selectedId2 = ref('null');
 var nextChangeId = 1;
 const handleSelectedIdUpdate = (newId) => {
-	if (newId === null) {
-		if (selectedId1.value == null) {
-			selectedId2.value = null;
+	if (newId === 'null') {
+		if (selectedId1.value == 'null') {
+			selectedId2.value = 'null';
 			nextChangeId = 1;
 		} else if (nextChangeId === 1) {
-			selectedId1.value = null;
+			selectedId1.value = 'null';
 			nextChangeId = 2;
 		} else {
-			selectedId2.value = null;
+			selectedId2.value = 'null';
 			nextChangeId = 1;
 		}
 	} else if (selectedId1.value == newId) {
-		selectedId1.value = null;
+		selectedId1.value = 'null';
 		nextChangeId = 1;
 	} else if (selectedId2.value == newId) {
-		selectedId2.value = null;
-		nextChangeId = selectedId1.value == null ? 1 : 2;
-	} else if (selectedId1.value === null) {
+		selectedId2.value = 'null';
+		nextChangeId = selectedId1.value == 'null' ? 1 : 2;
+		console.log('selectedId1: ', selectedId1.value);
+		console.log('nextChangeId: ', nextChangeId);
+	} else if (selectedId1.value === 'null') {
 		selectedId1.value = newId;
 		nextChangeId = 2;
-	} else if (selectedId2.value === null) {
+	} else if (selectedId2.value === 'null') {
 		selectedId2.value = newId;
 		nextChangeId = 1;
 	} else if (nextChangeId === 1) {
@@ -47,6 +49,10 @@ const handleSelectedIdUpdate = (newId) => {
 		selectedId2.value = newId;
 		nextChangeId = 1;
 	}
+	if (selectedId1.value === 'null')
+		selectedId1.value = 'null';
+	if (selectedId2.value === 'null')
+		selectedId2.value = 'null';
 }
 
 const updateSelectedIdByIndex = (newId, index) => {

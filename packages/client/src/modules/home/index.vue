@@ -1,5 +1,6 @@
 <!-- index.vue -->
-
+<template>
+</template>
 
 <script>
 import { useRouter } from 'vue-router';
@@ -26,17 +27,19 @@ export default {
 
 	data() {
 		return {
-			svg: null, // 保存SVG引用以便重新绘制
-			buildings: null, // 保存建筑物数据
-			initBuildingsOpacitySplit: 0.1,
-			transports: null, // 保存交通数据
-			xScale: null,
-			yScale: null,
-			speedColorScale: null,
-			timeScale: null,
-			curTime: d3.timeParse('%Y-%m-%d %H:%M:%S')(this.date + ' 00:00:00').getTime(),
-			rellativeDay: null,
-			curRealTime: null,
+			svg: null, // SVG图
+			buildings: null, // 建筑物数据
+			initBuildingsOpacitySplit: 0.1, // 建筑物透明度的最低值
+			transports: null, // 交通数据
+			xScale: null, // x坐标比例尺
+			yScale: null, // y坐标比例尺
+			speedColorScale: d3.scaleLinear() // 速度颜色映射
+				.domain([250, 350, 450])
+				.range(["red", "orange", "green"]),
+			timeScale: null, // 时间比例尺
+			curTime: d3.timeParse('%Y-%m-%d %H:%M:%S')(this.date + ' 00:00:00').getTime(), // 当前时间, 例: 2023-03-03 00:00:00
+			relativeDay: null, // 当前时间相对于一天的比例, [0, 1]
+			curRealTime: null, // 当前真实时间
 		};
 	},
 
@@ -213,21 +216,17 @@ export default {
 					.domain([0, width])
 					.range([parseTime(this.date + ' 00:00:00').getTime(), parseTime(this.date + ' 23:55:00').getTime()]);
 
-				this.speedColorScale = d3.scaleLinear()
-					.domain([250, 350, 450])
-					.range(["red", "orange", "green"]);
-
 				this.transports = transportsData
 				console.log("transports data: ");
 				console.log(this.transports);
 				if (transportsData != null) {
 					this.clearTransportsScatterPlot();
 
-					// 测试绘制轨迹图
-					console.log("data selected 1 by id: ", this.selectedId1);
-					this.drawTransportsTracePlot(this.selectDataById(this.selectedId1), 1);
-					console.log("data selected 2 by id: ", this.selectedId2);
-					this.drawTransportsTracePlot(this.selectDataById(this.selectedId2), 2);
+					// 绘制轨迹图
+					if (this.selectedId1 != null)
+						this.drawTransportsTracePlot(this.selectDataById(this.selectedId1), 1);
+					if (this.selectedId2 != null)
+						this.drawTransportsTracePlot(this.selectDataById(this.selectedId2), 2);
 				} else {
 					console.error("Failed to load transports data:", transportsData);
 				}
@@ -266,7 +265,7 @@ export default {
 					x = Math.max(0, Math.min(x, max_x));
 					this.handle.style("left", x + "px");
 
-					this.rellativeDay = x / max_x;
+					this.relativeDay = x / max_x;
 					this.curTime = x / max_x * (this.timeScale.range()[1] - this.timeScale.range()[0]) + this.timeScale.range()[0];
 					var selectData = this.selectDataByCurTime(this.curTime);
 					this.drawTransportsScatterPlot(selectData);
