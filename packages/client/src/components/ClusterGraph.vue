@@ -1,28 +1,20 @@
-<!-- ClusterGraph.vue -->
-
-<template>
-    <button @click="setId_null" style="width: 100%; height: 20%;">
-        set selectedId to null
-    </button>
-    <button @click="setId1" style="width: 100%; height: 20%;">
-        set selectedId to '1'
-    </button>
-    <button @click="setId2" style="width: 100%; height: 20%;">
-        set selectedId to '25'
-    </button>
-    <button @click="setId666" style="width: 100%; height: 20%;">
-        set selectedId to '666'
-    </button>
-    <p id="paragraph" style="width: 100%; height: 20%;">
-        selectedId1: <span id="selectedId1"></span>, selectedId2: <span id="selectedId2"></span>
-    </p>
-
-</template>
-
 <script>
-export default {
+import * as d3 from 'd3';
+import { useRouter } from 'vue-router';
+import HttpHelper from '../common/utils/axios_helper';
+import Urls from '../common/urls/index';
+import bus from '../common/utils/bus';
+  export default {
+    data() {
+      return {
+        colorScale: null,
+        xScale: null,
+        yScale: null,
+        svg: null,
+        tooltip: null, 
+      };
+    },
     name: 'ClusterGraph',
-
     props: {
         selectedId1: {
             type: String,
@@ -34,36 +26,154 @@ export default {
         },
     },
 
-    watch: {
-        selectedId1: function (newId) {
-            document.getElementById('selectedId1').innerText = newId == null ? 'null' : newId;
-        },
-        selectedId2: function (newId) {
-            document.getElementById('selectedId2').innerText = newId == null ? 'null' : newId;
-        },
-    },
-
     mounted() {
-        document.getElementById('selectedId1').innerText = this.selectedId1;
-        document.getElementById('selectedId2').innerText = this.selectedId2;
+      this.initScatter();
     },
-
     methods: {
-        setId_null() {
-            this.$emit('update:selectedId', 'null');
-        },
+      async initScatter() {
+        try {
+          const res = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/Clusters/TSNE.csv' });
+          console.log("cluster data: ");
+          console.log(res);
+          this.data = res;
+          if (res != null) {
+            this.plotScatter(res);
+          } else {
+            console.error("Failed to load cluster data:", res);
+          }
+        } catch (error) {
+          console.error("Failed to load cluster data:", error);
+        }
+      },
+  
+      plotScatter(data) {
+        if (this.svg) {
+          this.svg.remove();
+        }
+        const x = data.map((d) => +d.X),
+          y = data.map((d) => +d.Y),
+          labels = data.map((d) => +d.label);
+        const xTolerant = (d3.max(x) - d3.min(x)) / 10,
+          yTolerant = (d3.max(y) - d3.min(y)) / 10;
+        const uniqueLabels = labels.filter((d, i) => labels.indexOf(d) == i).sort((a, b) => a - b);
+  
+        const width = d3.select(".scatter-plot").node().getBoundingClientRect().width;
+        const height = d3.select(".scatter-plot").node().getBoundingClientRect().height;
+        const picture_range = 1.0;
+  
+        this.xScale = d3.scaleLinear()
+          .domain([d3.min(x) - xTolerant, d3.max(x) + xTolerant])
+          .range([width * (1 - picture_range) / 2, width - width * (1 - picture_range) / 2]);
+        this.yScale = d3.scaleLinear()
+          .domain([d3.min(y) - yTolerant, d3.max(y) + yTolerant])
+          .range([0, height * picture_range]);
+        this.colorScale = d3.scaleOrdinal()
+          .domain([5, 0, 4, 1, 2, 3])
+          .range(["#FF0033", "#ff9966", "#0099FF", "#FFCC00", "#99CC00", "#9966CC"]);
+        this.svg = d3.select(".scatter-plot").append("svg")
+          .attr("width", "100%")
+          .attr("height", "100%")
+          .style("background-color", "#f0f0f0")
+          .style("border", "1px solid #ccc");
+  
+        this.svg.selectAll("circle")
+          .data(data)
+          .enter()
+          .append("circle")
+          .attr("cx", (d) => this.xScale(d.X))
+          .attr("cy", (d) => this.yScale(d.Y))
+          .attr("r", 1.8)
+          .attr("fill", (d) => this.colorScale(d.label))
+          .attr("id", (d, i) => i)
+          .on("mouseover", (event, d) => this.selected(event, d, event.pageX, event.pageY))
+          .on("mouseout", (event, d) => this.unselected(event, d))
+          .on("click", (event, d) => this.clicked(event, d));
+  
+        const legendItemWidth = 60; // Width of each legend item
+        const legendItemMargin = 10; // Margin between legend items
+        const legendWidth = uniqueLabels.length * (legendItemWidth + legendItemMargin); // Total width of legend
+  
+        const legend = this.svg.append("g")
+          .attr("class", "legend")
+          .attr("transform", `translate(${(width - legendWidth) / 2}, ${height - 15})`);
+  
+        const legendItems = legend.selectAll(".legend-item")
+          .data(uniqueLabels)
+          .enter()
+          .append("g")
+          .attr("class", "legend-item")
+          .attr("transform", (d, i) => `translate(${i * (legendItemWidth + legendItemMargin)}, 0)`);
+  
+        legendItems.append("rect")
+          .attr("x", 0)
+          .attr("y", 0)
+          .attr("width", legendItemWidth)
+          .attr("height", 16)
+          .attr("fill", (d) => this.colorScale(d));
+  
+        legendItems.append("text")
+          .attr("x", legendItemWidth / 2)
+          .attr("y", 13)
+          .attr("text-anchor", "middle")
+          .text((d) => d);
+      },
+      selected(event, d, pageX, pageY) {
+          d3.select(event.currentTarget)
+              .transition()
+              .duration(200)
+              .attr("r", 8)
+              .attr("stroke", "black")
+              .attr("stroke-width", "2px");
+          this.showTooltip(d, pageX, pageY);
+      },
+  
+      unselected(event, d) {
+        d3.select(event.currentTarget)
+          .transition()
+          .duration(200)
+          .attr("r", 1.8)
+          .attr("stroke-width", "0px");
 
-        setId1() {
-            this.$emit('update:selectedId', '1');
-        },
-
-        setId2() {
-            this.$emit('update:selectedId', '25');
-        },
-
-        setId666() {
-            this.$emit('update:selectedId', '666');
-        },
-    }
-}
-</script>
+        this.hideTooltip();
+      },
+      clicked(event, d) {
+        console.log(d[""])
+        console.log(d.label)
+        bus.emit('participantID', d[""]);
+        bus.emit('labelID', d.label);
+        this.$emit('update:selectedId', d[""]);
+      },
+      showTooltip(d, pageX, pageY) {
+          this.tooltip = d3.select(".scatter-plot").append("div")
+              .attr("class", "tooltip")
+              .style("opacity", 0)
+              .html(`<strong>Participant ID:</strong> ${d[""]} <br> <strong>Label ID:</strong> ${d.label}`)
+              .style("left", pageX + "px")
+              .style("top", pageY + "px");
+  
+          this.tooltip.transition()
+              .duration(200)
+              .style("opacity", .9);
+      },
+      hideTooltip() {
+        this.tooltip.transition()
+          .duration(200)
+          .style("opacity", 0)
+          .remove();
+      },
+    },
+  };
+  </script>
+  
+  <style>
+  .tooltip {
+    position: absolute;
+    background-color: white;
+    color: black;
+    padding: 8px;
+    border-radius: 5px;
+    pointer-events: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+  </style>
+  

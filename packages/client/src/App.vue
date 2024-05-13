@@ -5,6 +5,7 @@ import { ref } from 'vue';
 import Mapcomponent from './modules/home/index.vue';
 import CalendarComponent from './components/Calendar.vue';
 import ClusterGraphComponent from './components/ClusterGraph.vue';
+import Piecomponent from './components/piechart.vue';
 import RivermapComponent from './components/Rivermap.vue';
 
 const date = ref('2022-03-01');
@@ -81,13 +82,15 @@ const updateSelectedIdByIndex = (newId, index) => {
 			<RivermapComponent :date="date"></RivermapComponent>
 		</div>
 		<div class="scatter-plot">
+
 			<ClusterGraphComponent :selectedId1="selectedId1" :selectedId2="selectedId2"
 				@update:selectedId="handleSelectedIdUpdate" @update:selectedIdByIndex="updateSelectedIdByIndex">
 			</ClusterGraphComponent>
+
 		</div>
 		<div class="daily-life-plot">
 			<button @click="toDetail" style="width: 100%; height: 100%;">
-				Daily-Life-Plot
+				<Piecomponent></Piecomponent>
 			</button>
 		</div>
 		<div class="overview">
