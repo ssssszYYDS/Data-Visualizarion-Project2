@@ -28,6 +28,8 @@ export default {
 	data() {
 		return {
 			svg: null, // SVG图
+			width: null, // SVG图 宽度
+			height: null, // SVG图 高度
 			buildings: null, // 建筑物数据
 			initBuildingsOpacitySplit: 0.1, // 建筑物透明度的最低值
 			transports: null, // 交通数据
@@ -141,8 +143,8 @@ export default {
 			const min_y = Math.min(...yValues);
 			const max_y = Math.max(...yValues);
 
-			const width = d3.select("#chart").node().getBoundingClientRect().width;
-			const height = d3.select("#chart").node().getBoundingClientRect().height;
+			this.width = d3.select("#chart").node().getBoundingClientRect().width;
+			this.height = d3.select("#chart").node().getBoundingClientRect().height;
 			const picture_range = 1.0;
 
 			const buildingType2color = {
@@ -161,10 +163,10 @@ export default {
 
 			this.xScale = d3.scaleLinear()
 				.domain([min_x, max_x])
-				.range([width * (1 - picture_range) / 2, width - width * (1 - picture_range) / 2]);
+				.range([this.width * (1 - picture_range) / 2, this.width - this.width * (1 - picture_range) / 2]);
 			this.yScale = d3.scaleLinear()
 				.domain([min_y, max_y])
-				.range([0, height * picture_range]);
+				.range([0, this.height * picture_range]);
 
 			// await this.initBuildingsOpacityByApartment(buildings, this.initBuildingsOpacitySplit); // 根据租金设置建筑物的透明度
 			await this.initBuildingsOpacityByCheckin(this.buildings, this.initBuildingsOpacitySplit); // 根据checkin设置建筑物的透明度
@@ -201,8 +203,6 @@ export default {
 		async initTransports(date) {
 			try {
 				const transportsData = await HttpHelper.post(Urls.getCSVData, { path: `CSVData/Transports/transports_${date}.csv` });
-				console.log("transports data: ");
-				console.log(transportsData);
 
 				// Parse the time
 				var parseTime = d3.timeParse('%Y-%m-%d %H:%M:%S');
@@ -211,9 +211,9 @@ export default {
 					d.timeStampFloat = d.timeStamp.getTime();
 				});
 
-				const width = d3.select("#chart").node().getBoundingClientRect().width;
+
 				this.timeScale = d3.scaleTime()
-					.domain([0, width])
+					.domain([0, this.width])
 					.range([parseTime(this.date + ' 00:00:00').getTime(), parseTime(this.date + ' 23:55:00').getTime()]);
 
 				this.transports = transportsData
@@ -261,7 +261,7 @@ export default {
 					var startTime = new Date().getTime();
 
 					var x = event.x;
-					var max_x = this.timeline.node().getBoundingClientRect().width - this.handle.node().getBoundingClientRect().width;
+					var max_x = this.width - this.handle.node().getBoundingClientRect().width;
 					x = Math.max(0, Math.min(x, max_x));
 					this.handle.style("left", x + "px");
 

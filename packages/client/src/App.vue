@@ -34,8 +34,6 @@ const handleSelectedIdUpdate = (newId) => {
 	} else if (selectedId2.value == newId) {
 		selectedId2.value = 'null';
 		nextChangeId = selectedId1.value == 'null' ? 1 : 2;
-		console.log('selectedId1: ', selectedId1.value);
-		console.log('nextChangeId: ', nextChangeId);
 	} else if (selectedId1.value === 'null') {
 		selectedId1.value = newId;
 		nextChangeId = 2;
