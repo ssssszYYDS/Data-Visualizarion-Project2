@@ -151,14 +151,14 @@ export default {
 				"Commercial": "#5F9EA0",   // 兰青色
 				"Residental": "#8B4513",   // 红棕色
 				"School": "#32CD32",       // 草绿色
-				"Other": "#FFFF00"         // 黄色
+				"Other": "#000000"         // 黑色
 			};
 
 
 			this.svg = d3.select("#chart").append("svg")
 				.attr("width", "100%")
 				.attr("height", "100%")
-				.style("background-color", "lightgrey")
+				.style("background-color", "rgb(255, 255, 240)")
 				.style("border", "1px solid black");
 
 			this.xScale = d3.scaleLinear()
