@@ -9,6 +9,7 @@ import Piecomponent from './components/piechart.vue';
 import RivermapComponent from './components/Rivermap.vue';
 import RountineComponent from './components/routine.vue';
 import OverviewComponent from './components/overview.vue';
+import NewOverviewComponent from './components/overviewNew.vue';
 const date = ref('2022-03-01');
 const handleDateUpdate = (newDate) => {
 	date.value = newDate;
@@ -90,7 +91,7 @@ const handleSelectedIdUpdate = (newId, newLabel) => {
 		</div>
 		<div class="overview">
 
-			<OverviewComponent></OverviewComponent>
+			<NewOverviewComponent></NewOverviewComponent>
 
 		</div>
 	</div>
