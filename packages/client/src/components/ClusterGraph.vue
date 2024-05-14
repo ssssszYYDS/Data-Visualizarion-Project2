@@ -7,6 +7,7 @@ import bus from '../common/utils/bus';
 export default {
 	data() {
 		return {
+			clusterData: null,
 			colorScale: null,
 			xScale: null,
 			yScale: null,
@@ -16,6 +17,10 @@ export default {
 	},
 	name: 'ClusterGraph',
 	props: {
+		date: {
+			type: String,
+			required: true,
+		},
 		selectedId1: {
 			required: true
 		},
@@ -24,23 +29,47 @@ export default {
 		},
 	},
 
-	mounted() {
+	watch: {
+		date: async function (newDate) {
+			const filteredData = await this.getFilteredData();
+			this.plotScatter(filteredData);
+		}
+	},
+
+	async mounted() {
 		this.initScatter();
 	},
 	methods: {
 		async initScatter() {
 			try {
 				const clusterData = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/Clusters/TSNE.csv' });
+				this.clusterData = clusterData;
 				console.log("cluster data: ");
-				console.log(clusterData);
-				this.data = clusterData;
-				if (clusterData != null) {
-					this.plotScatter(clusterData);
-				} else {
-					console.error("Failed to load cluster data:", clusterData);
-				}
+				console.log(this.clusterData);
+				const filteredData = await this.getFilteredData();
+
+				this.plotScatter(filteredData);
 			} catch (error) {
 				console.error("Failed to load cluster data:", error);
+			}
+		},
+		async getFilteredData() {
+			try {
+				const occurrenceData = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/Clusters/occurrence.csv' });
+				const occurrenceDayData = d3.filter(occurrenceData, (d) => d.day === this.date);
+				const occurrenceIdData = occurrenceDayData[0].occurrence.split('|');
+
+				const filteredData = this.clusterData.filter((d) => occurrenceIdData.includes(d.id));
+				console.log("filtered cluster data: ");
+				console.log(filteredData);
+
+				if (filteredData != null) {
+					return filteredData;
+				} else {
+					console.error("No cluster data found for the selected date.");
+				}
+			} catch (error) {
+				console.error("Failed to load occurrence data:", error);
 			}
 		},
 
@@ -135,17 +164,17 @@ export default {
 			this.hideTooltip();
 		},
 		clicked(event, d) {
-			// console.log(d[""])
+			// console.log(d.id)
 			// console.log(d.label)
-			bus.emit('participantID', d[""]);
+			bus.emit('participantID', d.id);
 			bus.emit('labelID', d.label);
-			this.$emit('update:selectedId', d[""], d.label);
+			this.$emit('update:selectedId', d.id, d.label);
 		},
 		showTooltip(d, pageX, pageY) {
 			this.tooltip = d3.select(".scatter-plot").append("div")
 				.attr("class", "tooltip")
 				.style("opacity", 0)
-				.html(`<strong>Participant ID:</strong> ${d[""]} <br> <strong>Label ID:</strong> ${d.label}`)
+				.html(`<strong>Participant ID:</strong> ${d.id} <br> <strong>Label ID:</strong> ${d.label}`)
 				.style("left", pageX + "px")
 				.style("top", pageY + "px");
 

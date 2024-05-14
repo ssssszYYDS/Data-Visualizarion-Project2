@@ -74,7 +74,7 @@ const handleSelectedIdUpdate = (newId, newLabel) => {
 		</div>
 		<div class="scatter-plot">
 
-			<ClusterGraphComponent :selectedId1=selectedId1 :selectedId2=selectedId2
+			<ClusterGraphComponent :date="date" :selectedId1=selectedId1 :selectedId2=selectedId2
 				@update:selectedId="handleSelectedIdUpdate">
 			</ClusterGraphComponent>
 
