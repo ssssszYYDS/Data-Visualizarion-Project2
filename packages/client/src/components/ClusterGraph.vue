@@ -17,11 +17,9 @@ export default {
 	name: 'ClusterGraph',
 	props: {
 		selectedId1: {
-			type: String,
 			required: true
 		},
 		selectedId2: {
-			type: String,
 			required: true
 		},
 	},

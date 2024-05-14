@@ -52,31 +52,18 @@ const handleSelectedIdUpdate = (newId, newLabel) => {
 	}
 }
 
-const updateSelectedIdByIndex = (newId, index) => {
-	if (index == 1) {
-		selectedId1.value.id = newId;
-		nextChangeId = newId == null ? 1 : 2;
-	}
-	else if (index == 2) {
-		selectedId2.value.id = newId;
-		nextChangeId = newId == null ? 2 : 1;
-	}
-	else
-		console.error('Invalid selectedId index: ', index);
-}
-
 </script>
 
 <template>
 	<div class="wrapper">
 		<div class="calendar">
-			<CalendarComponent :date="date" @update:date="handleDateUpdate">
+			<CalendarComponent :date="date" @update:date="handleDateUpdate" :selectedId1=selectedId1
+				:selectedId2=selectedId2 @update:selectedId="handleSelectedIdUpdate">
 			</CalendarComponent>
 			<p>当前日期：{{ date }}</p>
 		</div>
 		<div id="chart" class="map">
-			<Mapcomponent :date="date" :selectedId1=selectedId1 :selectedId2=selectedId2
-				:selectedLabel1="selectedLabel1" :selectedLabel2="selectedLabel2">
+			<Mapcomponent :date="date" :selectedId1=selectedId1 :selectedId2=selectedId2>
 			</Mapcomponent>
 		</div>
 		<div class="timeline">
@@ -88,7 +75,7 @@ const updateSelectedIdByIndex = (newId, index) => {
 		<div class="scatter-plot">
 
 			<ClusterGraphComponent :selectedId1=selectedId1 :selectedId2=selectedId2
-				@update:selectedId="handleSelectedIdUpdate" @update:selectedIdByIndex="updateSelectedIdByIndex">
+				@update:selectedId="handleSelectedIdUpdate">
 			</ClusterGraphComponent>
 
 		</div>

@@ -11,11 +11,6 @@ import * as echarts from 'echarts';
 export default {
 	data() {
 		return {
-			dateList: [
-				['2022-3-1'],
-				// ... 省略其余日期数据
-				['2022-3-31']
-			],
 			calendarInstance: null,
 			cellWidth: 0,
 			cellHeight: 0
@@ -122,6 +117,8 @@ export default {
 		handleCellClick(params) {
 			if (params.componentType === 'series') {
 				this.$emit('update:date', params.value[0]); // 使用this.$emit而不是this.emit
+				// this.$emit('update:selectedId', 'null', null);
+				// this.$emit('update:selectedId', 'null', null);
 				// alert('The day you have chose: ' + params.value[0]); // 显示正确的日期
 			}
 		}

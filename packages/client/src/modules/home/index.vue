@@ -34,7 +34,7 @@ export default {
 			xScale: null, // x坐标比例尺
 			yScale: null, // y坐标比例尺
 			speedColorScale: d3.scaleLinear() // 速度颜色映射
-				.domain([250, 350, 450])
+				.domain([250, 350, 470])
 				.range(["red", "orange", "green"]),
 			timeScale: null, // 时间比例尺
 			curTime: d3.timeParse('%Y-%m-%d %H:%M:%S')(this.date + ' 00:00:00').getTime(), // 当前时间, 例: 2023-03-03 00:00:00
@@ -55,11 +55,9 @@ export default {
 			this.drawTimeText();
 		},
 		selectedId1: async function (newId) {
-			console.log("selectedId1: ", this.selectedId1);
 			this.drawTransportsTracePlot(this.selectedId1.id, this.selectedId1.label, this.selectedId2.id, this.selectedId2.label);
 		},
 		selectedId2: async function (newId) {
-			console.log("selectedId2: ", this.selectedId2);
 			this.drawTransportsTracePlot(this.selectedId1.id, this.selectedId1.label, this.selectedId2.id, this.selectedId2.label);
 		},
 	},
@@ -91,9 +89,6 @@ export default {
 			const rents = apartments.map(apt => parseFloat(apt.rentalCost));
 			const minRent = Math.min(...rents);
 			const maxRent = Math.max(...rents);
-
-			console.log("minRent: " + minRent);
-			console.log("maxRent: " + maxRent);
 
 			buildings.forEach((building) => {
 				const apartment = apartments.find((apt) => apt.buildingId === building.buildingId);
@@ -223,9 +218,9 @@ export default {
 					this.clearTransportsScatterPlot();
 
 					// 绘制轨迹图
-					if (this.selectedId1 != null)
+					if (this.selectedId1 != 'null')
 						this.drawTransportsTracePlot(this.selectedId1.id, this.selectedId1.label);
-					if (this.selectedId2 != null)
+					if (this.selectedId2 != 'null')
 						this.drawTransportsTracePlot(this.selectedId2.id, this.selectedId2.label);
 				} else {
 					console.error("Failed to load transports data:", transportsData);
@@ -300,6 +295,8 @@ export default {
 				.attr("text-anchor", "end")
 				.attr("dominant-baseline", "bottom")
 				.style("font-size", "30px")
+				.attr("font-family", "Arial, Helvetica, sans-serif")
+				.attr("font-weight", "bold")
 				.text(this.curRealTime);
 		},
 
@@ -374,19 +371,21 @@ export default {
 		},
 
 		drawTransportsTracePlot(id1, label1, id2, label2) {
+			console.log("id1: " + id1 + ", label1: " + label1 + ", id2: " + id2 + ", label2: " + label2);
 			this.clearTransportsTracePlot();
 
 			const label2Color = {
-				0: { "arrowColor": "black", "circleColor": "orange" },
-				1: { "arrowColor": "black", "circleColor": "yellow" },
-				2: { "arrowColor": "black", "circleColor": "green" },
-				3: { "arrowColor": "black", "circleColor": "purple" },
-				4: { "arrowColor": "black", "circleColor": "blue" },
-				5: { "arrowColor": "black", "circleColor": "red" },
+				0: { "arrowColor": "orange", "circleColor": "orange" },
+				1: { "arrowColor": "yellow", "circleColor": "yellow" },
+				2: { "arrowColor": "green", "circleColor": "green" },
+				3: { "arrowColor": "purple", "circleColor": "purple" },
+				4: { "arrowColor": "blue", "circleColor": "blue" },
+				5: { "arrowColor": "red", "circleColor": "red" },
 			};
 
-			{
+			if (id1 != 'null' && id1 != undefined) {
 				const selectData = this.selectDataById(id1);
+				console.log("selectData1 length: " + selectData.length);
 				const arrowColor = label2Color[label1].arrowColor;
 				const circleColor = label2Color[label1].circleColor;
 
@@ -433,8 +432,9 @@ export default {
 					lastData = data;
 				});
 			}
-			{
+			if (id2 != 'null' && id2 != undefined) {
 				const selectData = this.selectDataById(id2);
+				console.log("selectData2 length: " + selectData.length);
 				const arrowColor = label2Color[label2].arrowColor;
 				const circleColor = label2Color[label2].circleColor;
 
