@@ -1,7 +1,7 @@
 <template>
-        <button style="width: 100%; height: 100%;">
-            <div class="calendar" ref="chart"></div>
-    </button>
+	<button style="width: 100%; height: 100%;">
+		<div class="calendar" ref="chart"></div>
+	</button>
 
 </template>
 
@@ -21,14 +21,14 @@ export default {
 			cellHeight: 0
 		};
 	},
-    name: 'Calendar',
+	name: 'Calendar',
 
-    props: {
-        date: {
-            type: String,
-            required: true
-        }
-    },
+	props: {
+		date: {
+			type: String,
+			required: true
+		}
+	},
 	mounted() {
 		this.initChart();
 		window.addEventListener('resize', this.resizeChart);
@@ -40,10 +40,10 @@ export default {
 		initChart() {
 			const chartDom = this.$refs.chart;
 			this.calendarInstance = echarts.init(chartDom);
-			function getVirtulData(year, month) {
+			function getVirtulData(year, month, day) {
 				year = year || '2022';
 				month = month || '3';
-				let date = new Date(`${year}-${month}-01`);
+				let date = new Date(`${year}-${month}-${day}`);
 				let end = new Date(year, month, 0);
 				let dayTime = 3600 * 24 * 1000;
 				let data = [];
@@ -77,31 +77,31 @@ export default {
 					}
 				],
 				series: [
-          {
-            type: 'custom',
-            coordinateSystem: 'calendar',
-            renderItem: function (params, api) {
-              const cellPoint = api.coord(api.value(0));
-              const cellWidth = params.coordSys.cellWidth;
-              const cellHeight = params.coordSys.cellHeight;
+					{
+						type: 'custom',
+						coordinateSystem: 'calendar',
+						renderItem: function (params, api) {
+							const cellPoint = api.coord(api.value(0));
+							const cellWidth = params.coordSys.cellWidth;
+							const cellHeight = params.coordSys.cellHeight;
 
-              return {
-                type: 'text',
-                style: {
-                  x: cellPoint[0],
-                  y: cellPoint[1],
-                  text: api.value(1), // 显示日期
-                  fill: 'black', // 修改数字颜色为黑色
-                  textFont: api.font({ fontSize: 14 }),
-                  textAlign: 'center',
-                  textVerticalAlign: 'middle'
-                }
-              };
-            },
-            dimensions: ['date', 'day'],
-            data: getVirtulData('2022', '3')
-          }
-        ]
+							return {
+								type: 'text',
+								style: {
+									x: cellPoint[0],
+									y: cellPoint[1],
+									text: api.value(1), // 显示日期
+									fill: 'black', // 修改数字颜色为黑色
+									textFont: api.font({ fontSize: 14 }),
+									textAlign: 'center',
+									textVerticalAlign: 'middle'
+								}
+							};
+						},
+						dimensions: ['date', 'day'],
+						data: getVirtulData('2022', '3', '1')
+					}
+				]
 			};
 			this.calendarInstance.setOption(option);
 			this.resizeChart(); // 初始调整大小
@@ -122,7 +122,7 @@ export default {
 		handleCellClick(params) {
 			if (params.componentType === 'series') {
 				this.$emit('update:date', params.value[0]); // 使用this.$emit而不是this.emit
-				alert('The day you have chose: ' + params.value[0]); // 显示正确的日期
+				// alert('The day you have chose: ' + params.value[0]); // 显示正确的日期
 			}
 		}
 	}
@@ -135,5 +135,3 @@ export default {
 	height: 100%;
 }
 </style>
-
-

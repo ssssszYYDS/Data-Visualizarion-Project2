@@ -100,7 +100,7 @@ const updateSelectedIdByIndex = (newId, index) => {
 			</button>
 		</div>
 		<div class="overview">
-			
+
 			<OverviewComponent></OverviewComponent>
 
 		</div>
@@ -147,12 +147,12 @@ const updateSelectedIdByIndex = (newId, index) => {
 
 
 .routine {
-  grid-area: 39 / 17 / 56 / 21;
+	grid-area: 39 / 17 / 56 / 21;
 }
 
 
 .daily-life-plot {
-  grid-area: 9 / 17 / 39 / 21;
+	grid-area: 9 / 17 / 39 / 21;
 }
 
 .request {

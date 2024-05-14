@@ -4,7 +4,7 @@
 		<div class="echarts-container" ref="echartsRef2"></div>
 	</div>
 </template>
-  
+
 <script>
 import * as echarts from 'echarts';
 import { useRouter } from 'vue-router';
@@ -13,24 +13,24 @@ import Urls from '../common/urls/index';
 import bus from '../common/utils/bus';
 export default {
 	data() {
-	  return {
-		chartData1: null,
-		chartData2: null,
-		alldata: null,
-		initlabel1: 'label2', // 默认选中的标签为label2
-		initlabel2: 'label3', // 默认选中的标签为label3
-		selectedLabels: []
-	  };
+		return {
+			chartData1: null,
+			chartData2: null,
+			alldata: null,
+			initlabel1: 'label2', // 默认选中的标签为label2
+			initlabel2: 'label3', // 默认选中的标签为label3
+			selectedLabels: []
+		};
 	},
 	mounted() {
-	  	this.loadData();
-	  	bus.on('labelID', (labelID) => {
-			const label = 'label' + labelID; 
-			console.log(label);
+		this.loadData();
+		bus.on('labelID', (labelID) => {
+			const label = 'label' + labelID;
 			if (this.selectedLabels.length >= 2) {
-				this.selectedLabels.shift(); 
+				this.selectedLabels.shift();
 			}
-			this.selectedLabels.push(label); 
+			this.selectedLabels.push(label);
+			console.log("selected labels: " + this.selectedLabels);
 			this.updateCharts(1);
 			this.updateCharts(2);
 		});
@@ -62,16 +62,16 @@ export default {
 				},
 				legend: {
 					data: [
-					'Home',
-					'Work',
-					'Transport',
-					'Restaurant',
-					'Recreation',
-					'Wage',
-					'Shelter',
-					'Edu',
-					'Food',
-					'Play'
+						'Home',
+						'Work',
+						'Transport',
+						'Restaurant',
+						'Recreation',
+						'Wage',
+						'Shelter',
+						'Edu',
+						'Food',
+						'Play'
 					]
 				},
 				series: [
@@ -146,23 +146,23 @@ export default {
 		},
 		updateCharts() {
 			this.chartData1 = this.generateChartData(this.alldata, this.selectedLabels[0]);
-			if(this.selectedLabels[1] == null){
+			if (this.selectedLabels[1] == null) {
 				this.chartData2 = this.generateChartData(this.alldata, this.initlabel2);
 			}
-			else{
+			else {
 				this.chartData2 = this.generateChartData(this.alldata, this.selectedLabels[1]);
 			}
 			this.renderChart(1);
 			this.renderChart(2);
 		}
 	}
-  };
-  </script>
-  
-  <style scoped>
-  .echarts-container {
-	  width: 100%;
-	  height: 400px;
-	  margin-bottom: -50px;
-  }
-  </style>
+};
+</script>
+
+<style scoped>
+.echarts-container {
+	width: 100%;
+	height: 400px;
+	margin-bottom: -20px;
+}
+</style>
