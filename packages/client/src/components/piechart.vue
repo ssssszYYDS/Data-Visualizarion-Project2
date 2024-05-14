@@ -17,15 +17,15 @@ export default {
 			chartData1: null,
 			chartData2: null,
 			alldata: null,
-			initlabel1: 'label2', // 默认选中的标签为label2
-			initlabel2: 'label3', // 默认选中的标签为label3
+			initlabel1: '1', 
+			initlabel2: '2',
 			selectedLabels: []
 		};
 	},
 	mounted() {
 		this.loadData();
-		bus.on('labelID', (labelID) => {
-			const label = 'label' + labelID;
+		bus.on('participantID', (participantID) => {
+			const label =  participantID;
 			if (this.selectedLabels.length >= 2) {
 				this.selectedLabels.shift();
 			}
@@ -38,7 +38,7 @@ export default {
 	methods: {
 		async loadData() {
 			try {
-				const centers = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/Clusters/center.csv' });
+				const centers = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/Clusters/Id_cluster.csv' });
 				this.alldata = centers;
 				// console.log("centers data: ");
 				// console.log(centers);
@@ -54,13 +54,14 @@ export default {
 			return {
 				tooltip: {
 					trigger: 'item',
-					formatter: '{a}: {d}%'
+					formatter: '{a}: {d}%',
 				},
 				grid: {
 					right: "25%",
 					left: "25%",
 				},
 				legend: {
+
 					data: [
 						'Home',
 						'Work',
@@ -72,17 +73,23 @@ export default {
 						'Edu',
 						'Food',
 						'Play'
-					]
+					],
+					textStyle: {
+						color: '#fff'
+					}
 				},
 				series: [
 					{
-						name: 'Money Weighting',
+						name: 'Money Weighting: ID ' + selectedLabel,
 						type: 'pie',
 						selectedMode: 'single',
 						radius: [0, '30%'],
 						label: {
 							position: 'inner',
-							fontSize: 10
+							fontSize: 10,
+							textStyle: {
+								color: '#fff'
+							}
 						},
 						labelLine: {
 							show: false
@@ -90,22 +97,24 @@ export default {
 						data: centers.map(item => ({ value: parseFloat(item[selectedLabel]), name: item[''] })).slice(5)
 					},
 					{
-						name: 'Time Weighting',
+						name: 'Participant ID ' + selectedLabel,
 						type: 'pie',
 						radius: ['45%', '60%'],
 						labelLine: {
 							length: 15
 						},
 						label: {
-							formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}/: }  {per|{d}%}  ',
+							formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}/: }  {per|{d}%}',
 							backgroundColor: '#F6F8FC',
 							borderColor: '#8C8D8E',
 							borderWidth: 1,
 							borderRadius: 4,
 							rich: {
 								a: {
-									color: '#6E7079',
+									color: '#4C5058',
 									lineHeight: 20,
+									fontSize: 14,
+									fontWeight: 'bold',
 									align: 'center'
 								},
 								hr: {
@@ -125,6 +134,16 @@ export default {
 									backgroundColor: '#4C5058',
 									padding: [3, 4],
 									borderRadius: 4
+								},
+								p: {
+									color: '#6E7079',
+									lineHeight: 20,
+									align: 'center'
+								},
+								c: {
+									color: '#4C5058',
+									lineHeight: 20,
+									align: 'center'
 								}
 							}
 						},
