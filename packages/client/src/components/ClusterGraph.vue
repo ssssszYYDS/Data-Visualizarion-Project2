@@ -141,7 +141,7 @@ export default {
 			// console.log(d.label)
 			bus.emit('participantID', d[""]);
 			bus.emit('labelID', d.label);
-			this.$emit('update:selectedId', d[""]);
+			this.$emit('update:selectedId', d[""], d.label);
 		},
 		showTooltip(d, pageX, pageY) {
 			this.tooltip = d3.select(".scatter-plot").append("div")

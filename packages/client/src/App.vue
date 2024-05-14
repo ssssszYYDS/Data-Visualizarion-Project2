@@ -15,49 +15,50 @@ const handleDateUpdate = (newDate) => {
 }
 
 
-const selectedId1 = ref('null');
-const selectedId2 = ref('null');
+const selectedId1 = ref({ id: 'null', label: null });
+const selectedId2 = ref({ id: 'null', label: null });
 var nextChangeId = 1;
-const handleSelectedIdUpdate = (newId) => {
+const handleSelectedIdUpdate = (newId, newLabel) => {
+	console.log('newId:', newId, 'newLabel:', newLabel);
 	if (newId === 'null') {
-		if (selectedId1.value == 'null') {
-			selectedId2.value = 'null';
+		if (selectedId1.value.id == 'null') {
+			selectedId2.value = { id: 'null', label: null };
 			nextChangeId = 1;
 		} else if (nextChangeId === 1) {
-			selectedId1.value = 'null';
+			selectedId1.value = { id: 'null', label: null };
 			nextChangeId = 2;
 		} else {
-			selectedId2.value = 'null';
+			selectedId2.value = { id: 'null', label: null };
 			nextChangeId = 1;
 		}
-	} else if (selectedId1.value == newId) {
-		selectedId1.value = 'null';
+	} else if (selectedId1.value.id == newId) {
+		selectedId1.value = { id: 'null', label: null };
 		nextChangeId = 1;
-	} else if (selectedId2.value == newId) {
-		selectedId2.value = 'null';
-		nextChangeId = selectedId1.value == 'null' ? 1 : 2;
-	} else if (selectedId1.value === 'null') {
-		selectedId1.value = newId;
+	} else if (selectedId2.value.id == newId) {
+		selectedId2.value = { id: 'null', label: null };
+		nextChangeId = selectedId1.value.id == 'null' ? 1 : 2;
+	} else if (selectedId1.value.id === 'null') {
+		selectedId1.value = { id: newId, label: newLabel };
 		nextChangeId = 2;
-	} else if (selectedId2.value === 'null') {
-		selectedId2.value = newId;
+	} else if (selectedId2.value.id === 'null') {
+		selectedId2.value = { id: newId, label: newLabel };
 		nextChangeId = 1;
 	} else if (nextChangeId === 1) {
-		selectedId1.value = newId;
+		selectedId1.value = { id: newId, label: newLabel };
 		nextChangeId = 2;
 	} else {
-		selectedId2.value = newId;
+		selectedId2.value = { id: newId, label: newLabel };
 		nextChangeId = 1;
 	}
 }
 
 const updateSelectedIdByIndex = (newId, index) => {
 	if (index == 1) {
-		selectedId1.value = newId;
+		selectedId1.value.id = newId;
 		nextChangeId = newId == null ? 1 : 2;
 	}
 	else if (index == 2) {
-		selectedId2.value = newId;
+		selectedId2.value.id = newId;
 		nextChangeId = newId == null ? 2 : 1;
 	}
 	else
@@ -74,7 +75,9 @@ const updateSelectedIdByIndex = (newId, index) => {
 			<p>当前日期：{{ date }}</p>
 		</div>
 		<div id="chart" class="map">
-			<Mapcomponent :date="date" :selectedId1="selectedId1" :selectedId2="selectedId2"></Mapcomponent>
+			<Mapcomponent :date="date" :selectedId1=selectedId1 :selectedId2=selectedId2
+				:selectedLabel1="selectedLabel1" :selectedLabel2="selectedLabel2">
+			</Mapcomponent>
 		</div>
 		<div class="timeline">
 			<div class="time-point"></div>
@@ -84,7 +87,7 @@ const updateSelectedIdByIndex = (newId, index) => {
 		</div>
 		<div class="scatter-plot">
 
-			<ClusterGraphComponent :selectedId1="selectedId1" :selectedId2="selectedId2"
+			<ClusterGraphComponent :selectedId1=selectedId1 :selectedId2=selectedId2
 				@update:selectedId="handleSelectedIdUpdate" @update:selectedIdByIndex="updateSelectedIdByIndex">
 			</ClusterGraphComponent>
 

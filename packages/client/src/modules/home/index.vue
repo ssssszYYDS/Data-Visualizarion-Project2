@@ -16,11 +16,9 @@ export default {
 			required: true,
 		},
 		selectedId1: {
-			type: String,
 			required: true,
 		},
 		selectedId2: {
-			type: String,
 			required: true,
 		},
 	},
@@ -57,10 +55,12 @@ export default {
 			this.drawTimeText();
 		},
 		selectedId1: async function (newId) {
-			this.drawTransportsTracePlot(this.selectDataById(newId), 1);
+			console.log("selectedId1: ", this.selectedId1);
+			this.drawTransportsTracePlot(this.selectedId1.id, this.selectedId1.label, this.selectedId2.id, this.selectedId2.label);
 		},
 		selectedId2: async function (newId) {
-			this.drawTransportsTracePlot(this.selectDataById(newId), 2);
+			console.log("selectedId2: ", this.selectedId2);
+			this.drawTransportsTracePlot(this.selectedId1.id, this.selectedId1.label, this.selectedId2.id, this.selectedId2.label);
 		},
 	},
 
@@ -224,9 +224,9 @@ export default {
 
 					// 绘制轨迹图
 					if (this.selectedId1 != null)
-						this.drawTransportsTracePlot(this.selectDataById(this.selectedId1), 1);
+						this.drawTransportsTracePlot(this.selectedId1.id, this.selectedId1.label);
 					if (this.selectedId2 != null)
-						this.drawTransportsTracePlot(this.selectDataById(this.selectedId2), 2);
+						this.drawTransportsTracePlot(this.selectedId2.id, this.selectedId2.label);
 				} else {
 					console.error("Failed to load transports data:", transportsData);
 				}
@@ -373,66 +373,122 @@ export default {
 					.remove();
 		},
 
-		drawTransportsTracePlot(selectData, idGroup) {
-			// Draw the trace plot with arrows
-			this.clearTransportsTracePlot(idGroup);
+		drawTransportsTracePlot(id1, label1, id2, label2) {
+			this.clearTransportsTracePlot();
 
-			const idGroup2Color = {
-				1: { "arrowColor": "black", "circleColor": "blue" },
-				2: { "arrowColor": "red", "circleColor": "green" },
+			const label2Color = {
+				0: { "arrowColor": "black", "circleColor": "orange" },
+				1: { "arrowColor": "black", "circleColor": "yellow" },
+				2: { "arrowColor": "black", "circleColor": "green" },
+				3: { "arrowColor": "black", "circleColor": "purple" },
+				4: { "arrowColor": "black", "circleColor": "blue" },
+				5: { "arrowColor": "black", "circleColor": "red" },
 			};
 
-			const arrowColor = idGroup2Color[idGroup].arrowColor;
-			const circleColor = idGroup2Color[idGroup].circleColor;
+			{
+				const selectData = this.selectDataById(id1);
+				const arrowColor = label2Color[label1].arrowColor;
+				const circleColor = label2Color[label1].circleColor;
 
-			// 定义箭头标记
-			this.svg.append("defs").append("marker")
-				.attr("id", `arrowhead${idGroup}`)
-				.attr("viewBox", "0 0 10 10")
-				.attr("refX", 8)
-				.attr("refY", 5)
-				.attr("markerWidth", 12)
-				.attr("markerHeight", 12)
-				.attr("orient", "auto")
-				.attr("opacity", 0.8)
-				.attr("fill", arrowColor)
-				.append("path")
-				.attr("d", "M 0 0 L 10 5 L 0 10 L 4 5 z");
+				// 定义箭头标记
+				this.svg.append("defs").append("marker")
+					.attr("id", `arrowhead${arrowColor}`)
+					.attr("viewBox", "0 0 10 10")
+					.attr("refX", 8)
+					.attr("refY", 5)
+					.attr("markerWidth", 12)
+					.attr("markerHeight", 12)
+					.attr("orient", "auto")
+					.attr("opacity", 0.8)
+					.attr("fill", arrowColor)
+					.append("path")
+					.attr("d", "M 0 0 L 10 5 L 0 10 L 4 5 z");
 
-			// 绘制新的线条并添加箭头标记
-			this.svg.selectAll(`line.trace-line${idGroup}`)
-				.data(selectData.slice(0, -1))
-				.enter()
-				.append("line")
-				.attr("class", `trace-line${idGroup}`)
-				.attr("x1", (d) => { return this.xScale(d.loc_x); })
-				.attr("y1", (d) => { return this.yScale(d.loc_y); })
-				.attr("x2", (d, i) => { return this.xScale(selectData[i + 1].loc_x); })
-				.attr("y2", (d, i) => { return this.yScale(selectData[i + 1].loc_y); })
-				.attr("stroke", arrowColor)
-				.attr("stroke-width", 1)
-				.attr("marker-end", `url(#arrowhead${idGroup})`);
+				// 额外绘制新的线条并添加箭头标记
+				this.svg.selectAll(`line.trace-line1`)
+					.data(selectData.slice(0, -1))
+					.enter()
+					.append("line")
+					.attr("class", `trace-line1`)
+					.attr("x1", (d) => { return this.xScale(d.loc_x); })
+					.attr("y1", (d) => { return this.yScale(d.loc_y); })
+					.attr("x2", (d, i) => { return this.xScale(selectData[i + 1].loc_x); })
+					.attr("y2", (d, i) => { return this.yScale(selectData[i + 1].loc_y); })
+					.attr("stroke", arrowColor)
+					.attr("stroke-width", 1)
+					.attr("marker-end", `url(#arrowhead${arrowColor})`);
 
-			// 根据停留时间绘制圆圈
-			var stayTime = 0;
-			var lastData = selectData[0];
-			selectData.forEach((data) => {
-				stayTime = (data.timeStampFloat - lastData.timeStampFloat) / 1000;
-				this.svg.append("circle")
-					.attr("class", `trace-point${idGroup}`)
-					.attr("cx", this.xScale(data.loc_x))
-					.attr("cy", this.yScale(data.loc_y))
-					.attr("r", (d) => { return (stayTime / 20) ** 0.5; })
-					.attr("fill", circleColor)
-					.attr("fill-opacity", 0.3)
-				lastData = data;
-			});
+				// 根据停留时间绘制圆圈
+				var stayTime = 0;
+				var lastData = selectData[0];
+				selectData.forEach((data) => {
+					stayTime = (data.timeStampFloat - lastData.timeStampFloat) / 1000;
+					this.svg.append("circle")
+						.attr("class", `trace-point`)
+						.attr("cx", this.xScale(data.loc_x))
+						.attr("cy", this.yScale(data.loc_y))
+						.attr("r", (d) => { return (stayTime / 20) ** 0.5; })
+						.attr("fill", circleColor)
+						.attr("fill-opacity", 0.3)
+					lastData = data;
+				});
+			}
+			{
+				const selectData = this.selectDataById(id2);
+				const arrowColor = label2Color[label2].arrowColor;
+				const circleColor = label2Color[label2].circleColor;
+
+				// 定义箭头标记
+				this.svg.append("defs").append("marker")
+					.attr("id", `arrowhead${arrowColor}`)
+					.attr("viewBox", "0 0 10 10")
+					.attr("refX", 8)
+					.attr("refY", 5)
+					.attr("markerWidth", 12)
+					.attr("markerHeight", 12)
+					.attr("orient", "auto")
+					.attr("opacity", 0.8)
+					.attr("fill", arrowColor)
+					.append("path")
+					.attr("d", "M 0 0 L 10 5 L 0 10 L 4 5 z");
+
+				// 额外绘制新的线条并添加箭头标记
+				this.svg.selectAll(`line.trace-line2`)
+					.data(selectData.slice(0, -1))
+					.enter()
+					.append("line")
+					.attr("class", `trace-line2`)
+					.attr("x1", (d) => { return this.xScale(d.loc_x); })
+					.attr("y1", (d) => { return this.yScale(d.loc_y); })
+					.attr("x2", (d, i) => { return this.xScale(selectData[i + 1].loc_x); })
+					.attr("y2", (d, i) => { return this.yScale(selectData[i + 1].loc_y); })
+					.attr("stroke", arrowColor)
+					.attr("stroke-width", 1)
+					.attr("marker-end", `url(#arrowhead${arrowColor})`);
+
+				// 根据停留时间绘制圆圈
+				var stayTime = 0;
+				var lastData = selectData[0];
+				selectData.forEach((data) => {
+					stayTime = (data.timeStampFloat - lastData.timeStampFloat) / 1000;
+					this.svg.append("circle")
+						.attr("class", `trace-point`)
+						.attr("cx", this.xScale(data.loc_x))
+						.attr("cy", this.yScale(data.loc_y))
+						.attr("r", (d) => { return (stayTime / 20) ** 0.5; })
+						.attr("fill", circleColor)
+						.attr("fill-opacity", 0.3)
+					lastData = data;
+				});
+			}
 		},
 
-		clearTransportsTracePlot(idGroup) {
-			this.svg.selectAll(`line.trace-line${idGroup}`)
+		clearTransportsTracePlot() {
+			this.svg.selectAll(`line.trace-line1`)
 				.remove();
-			this.svg.selectAll(`circle.trace-point${idGroup}`)
+			this.svg.selectAll(`line.trace-line2`)
+				.remove();
+			this.svg.selectAll(`circle.trace-point`)
 				.remove();
 		},
 	}
