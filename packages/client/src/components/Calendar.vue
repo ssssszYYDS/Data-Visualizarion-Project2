@@ -78,7 +78,9 @@ export default {
 					yearLabel: {
 					formatter: '{start}  1st',
 					color: '#fff',
-					position: 'top'
+					position: 'top',
+					fontSize: 18, 
+					margin: 24
 					},
 					dayLabel: {
 					firstDay: 1,
@@ -108,7 +110,9 @@ export default {
 					yearLabel: {
 					formatter: '{start}  2nd',
 					color: '#fff',
-					position: 'top'
+					position: 'top',
+					fontSize: 18, 
+					margin: 24
 					},
 					dayLabel: {
 					firstDay: 1,
@@ -138,7 +142,9 @@ export default {
 					yearLabel: {
 					formatter: '{start}  3rd',
 					color: '#fff',
-					position: 'top'
+					position: 'top',
+					fontSize: 18, 
+					margin: 24
 					},
 					dayLabel: {
 					firstDay: 1,
@@ -250,11 +256,11 @@ export default {
 				},
 				{
 					cellSize: [this.cellWidth, this.cellWidth],
-					top: this.cellHeight*2
+					top: this.cellHeight*2.2
 				},
 				{
 					cellSize: [this.cellWidth, this.cellWidth],
-					top: this.cellHeight*3
+					top: this.cellHeight*3.4
 				}],
 				series: [{
 					label: {

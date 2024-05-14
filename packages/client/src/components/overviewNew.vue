@@ -105,21 +105,30 @@ import { fa } from 'element-plus/es/locale/index.mjs';
             title: {
                 text: 'Monthly Expenditure',
                 left: 'center',
-                top:'5%'
+                top:'3%',
+                textStyle: {
+                color: '#fff',
+              }
             },
           legend: [
             {
                 data: ['Wage','Shelter','Education','Food','Recreation'],
-                right: '10%',
+                right: '3%',
                 orient: 'vertical',
-                top: '20%'
+                top: '20%',
+                textStyle: {
+                color: '#fff',
+              }
             },
             {
                 data: ['AtHome','AtRecreation','AtRestaurant','AtWork','Transport'],
-                right: '10%',
+                right: '1%',
                 orient: 'vertical',
                 bottom: '20%',
-                inactiveColor: '#ccc' // 将第二套图例的所有项设置为灰色显示
+                inactiveColor: '#ccc', // 将第二套图例的所有项设置为灰色显示
+                textStyle: {
+                color: '#fff',
+              }
             }
         ],
         //   brush: {
@@ -158,7 +167,8 @@ import { fa } from 'element-plus/es/locale/index.mjs';
             axisLabel: {show: false},
             axisTick: { show: false },
             inverse: true,
-            scale: true
+            scale: true,
+            
           },
           xAxis: [
          {
@@ -178,7 +188,8 @@ import { fa } from 'element-plus/es/locale/index.mjs';
           },
         ],
           grid: {
-            bottom: 0
+            bottom: 0,
+            left: 10
           },
           series: [
             {

@@ -8,7 +8,6 @@ import ClusterGraphComponent from './components/ClusterGraph.vue';
 import Piecomponent from './components/piechart.vue';
 import RivermapComponent from './components/Rivermap.vue';
 import RountineComponent from './components/routine.vue';
-import OverviewComponent from './components/overview.vue';
 import NewOverviewComponent from './components/overviewNew.vue';
 const date = ref('2022-03-01');
 const handleDateUpdate = (newDate) => {
@@ -90,8 +89,8 @@ const handleSelectedIdUpdate = (newId, newLabel) => {
 			</button>
 		</div>
 		<div class="overview">
-
-			<NewOverviewComponent></NewOverviewComponent>
+			<button style="width: 100%; height: 100%; background-color: #404a59;"><NewOverviewComponent></NewOverviewComponent></button>
+			
 
 		</div>
 	</div>
@@ -108,7 +107,7 @@ const handleSelectedIdUpdate = (newId, newLabel) => {
 }
 
 .calendar {
-	grid-area: 1 / 1 / 20 / 5;
+	grid-area: 1 / 1 / 16 / 5;
 }
 
 .map {
@@ -124,7 +123,7 @@ const handleSelectedIdUpdate = (newId, newLabel) => {
 }
 
 .overview {
-	grid-area: 21 / 1 / 56 / 5;
+	grid-area: 16 / 1 / 56 / 5;
 }
 
 .timeline {
