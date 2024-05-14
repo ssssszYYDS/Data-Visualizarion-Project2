@@ -60,7 +60,6 @@ const handleSelectedIdUpdate = (newId, newLabel) => {
 			<CalendarComponent :date="date" @update:date="handleDateUpdate" :selectedId1=selectedId1
 				:selectedId2=selectedId2 @update:selectedId="handleSelectedIdUpdate">
 			</CalendarComponent>
-			<p>当前日期：{{ date }}</p>
 		</div>
 		<div id="chart" class="map">
 			<Mapcomponent :date="date" :selectedId1=selectedId1 :selectedId2=selectedId2>
@@ -80,7 +79,7 @@ const handleSelectedIdUpdate = (newId, newLabel) => {
 
 		</div>
 		<div class="daily-life-plot">
-			<button @click="toDetail" style="width: 100%; height: 100%;">
+			<button style="width: 100%; height: 100%; background-color: #404a59;">
 				<Piecomponent></Piecomponent>
 			</button>
 		</div>
@@ -108,7 +107,7 @@ const handleSelectedIdUpdate = (newId, newLabel) => {
 }
 
 .calendar {
-	grid-area: 1 / 1 / 10 / 5;
+	grid-area: 1 / 1 / 20 / 5;
 }
 
 .map {
@@ -124,7 +123,7 @@ const handleSelectedIdUpdate = (newId, newLabel) => {
 }
 
 .overview {
-	grid-area: 10 / 1 / 56 / 5;
+	grid-area: 21 / 1 / 56 / 5;
 }
 
 .timeline {

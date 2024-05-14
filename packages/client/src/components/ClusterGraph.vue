@@ -100,7 +100,7 @@ export default {
 			this.svg = d3.select(".scatter-plot").append("svg")
 				.attr("width", "100%")
 				.attr("height", "100%")
-				.style("background-color", "#f0f0f0")
+				.style("background-color", "#404a59")
 				.style("border", "1px solid #ccc");
 
 			this.svg.selectAll("circle")
@@ -115,7 +115,28 @@ export default {
 				.on("mouseover", (event, d) => this.selected(event, d, event.pageX, event.pageY))
 				.on("mouseout", (event, d) => this.unselected(event, d))
 				.on("click", (event, d) => this.clicked(event, d));
-
+			for (let i = 1; i < 3; i++) {
+				this.svg.append("line")
+					.attr("x1", 0)
+					.attr("y1", height / 3 * i)
+					.attr("x2", width)
+					.attr("y2", height / 3 * i)
+					.attr("stroke", "white")
+					.attr("stroke-dasharray", "5")
+					.attr("stroke-width", "1")
+					.attr("opacity", 0.8); 
+			}
+			for (let i = 1; i < 4; i++) {
+				this.svg.append("line")
+					.attr("x1", width / 4 * i)
+					.attr("y1", 0)
+					.attr("x2", width / 4 * i)
+					.attr("y2", height)
+					.attr("stroke", "white")
+					.attr("stroke-dasharray", "5")
+					.attr("stroke-width", "1")
+					.attr("opacity", 0.8); 
+			}
 			const legendItemWidth = 60; // Width of each legend item
 			const legendItemMargin = 10; // Margin between legend items
 			const legendWidth = uniqueLabels.length * (legendItemWidth + legendItemMargin); // Total width of legend
@@ -201,5 +222,8 @@ export default {
 	border-radius: 5px;
 	pointer-events: none;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+.cluster-graph {
+    background-color: #404a59;
 }
 </style>
