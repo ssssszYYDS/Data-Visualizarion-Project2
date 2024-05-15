@@ -68,7 +68,9 @@ export default {
 
 			const xScale = d3.scaleTime()
 				.range([0, width])
-				.domain(d3.extent(data, (d) => parseTime(d.day + ' ' + d.time)));
+				// .domain(d3.extent(data, (d) => parseTime(d.day + ' ' + d.time)))
+				.domain([parseTime(this.date + ' ' + '00:00:00'), parseTime(this.date + ' ' + '23:55:00')]);
+			console.log("xScale: ", xScale.domain());
 
 			var timeStampsTotalCounts = {};
 			data.forEach((d) => {
