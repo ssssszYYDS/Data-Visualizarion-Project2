@@ -85,7 +85,7 @@ const handleSelectedIdUpdate = (newId, newLabel) => {
 		</div>
 		<div class="routine">
 			<button style="width: 100%; height: 100%; background-color: #404a59;">
-				<RountineComponent></RountineComponent>
+				<RountineComponent :selectedId1=selectedId1 :selectedId2=selectedId2></RountineComponent>
 			</button>
 		</div>
 		<div class="overview">

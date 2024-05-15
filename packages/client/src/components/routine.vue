@@ -15,7 +15,7 @@ export default {
 			alldata: null,
 			data: [],
 			columns: [],
-			participantId: ["1", "2"],
+			participantId: ['null', 'null'],
 			startTime: +new Date("2022-03-01T00:00:00"),
 			current_time: '2022-03-01',
 			types: [
@@ -24,81 +24,110 @@ export default {
 				{ name: 'AtRecreation', color: '#66cc66' },
 				{ name: 'AtRestaurant', color: '#cc0000' },
 				{ name: 'AtWork', color: '#9933cc' },
-			]
+			],
 		};
 	},
-	mounted() {
+
+	props: {
+		selectedId1: {
+			required: true,
+		},
+		selectedId2: {
+			required: true,
+		},
+	},
+
+	async mounted() {
 		this.chart = echarts.init(this.$refs.chart);
-		this.loadData();
-		bus.on('participantID', (participantID) => {
-			const label = String(participantID);
-			console.log(label);
-			if (this.participantId.length >= 2) {
-				this.participantId.shift();
-			}
-			this.participantId.push(label);
-			this.loadData(); // 更新数据
-		});
-		bus.on('time', (time) => {
+		await this.loadData();
+		this.generateRountine(this.alldata, this.columns);
+		this.renderChart();
+
+		// bus.on('participantID', (participantID) => {
+		// 	const label = String(participantID);
+		// 	console.log(label);
+		// 	if (this.participantId.length >= 2) {
+		// 		this.participantId.shift();
+		// 	}
+		// 	this.participantId.push(label);
+		// 	this.generateRountine(this.alldata, this.columns);
+		// 	this.renderChart();
+		// });
+
+		bus.on('time', async (time) => {
 			const label = String(time);
 			console.log(label);
 			this.current_time = label;
-			this.loadData(); // 更新数据
+			await this.loadData(); // 更新数据
+			this.generateRountine(this.alldata, this.columns);
+			this.renderChart();
 		});
 	},
+
+	watch: {
+		selectedId1: function (newId) {
+			this.participantId[1] = this.selectedId1.id;
+			this.generateRountine(this.alldata, this.columns);
+			this.renderChart();
+		},
+		selectedId2: function (newId) {
+			this.participantId[0] = this.selectedId2.id;
+			this.generateRountine(this.alldata, this.columns);
+			this.renderChart();
+		}
+	},
+
 	methods: {
 		async loadData() {
 			try {
-				this.data = []; // 清空之前的数据
 				const centers = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/dailyrountine/' + this.current_time + '.csv' });
 				this.alldata = centers;
 				console.table(this.alldata.slice(0, 5));
+				this.columns = Object.keys(centers[0]);
 
-				const firstRow = centers[0];
-				this.columns = Object.keys(firstRow);
-				this.generateRountine(this.alldata, this.participantId[0], this.columns, 0);
-				this.generateRountine(this.alldata, this.participantId[1], this.columns, 1);
-
-				this.renderChart();
 			} catch (error) {
 				console.error("Failed to load centers data:", error);
 			}
 		},
-		generateRountine(alldata, initlabel, columns, index) {
-			let baseTime = this.startTime;
-			const participantRow = alldata.find(row => String(parseInt(row.participantId)) === initlabel);
-			const timeKeys = Object.keys(participantRow).filter(key => key !== 'participantId');
-			for (let i = 1; i < columns.length - 1; i++) {
-				const timeKey1 = timeKeys[i]
-				const timeKey2 = timeKeys[i + 1]
-				const new_1 = this.createTimeStringWithLeadingZeros(String(timeKey1));
-				const new_2 = this.createTimeStringWithLeadingZeros(String(timeKey2));
-				// console.log(('2022-03-01T' + new_1));
-				const date1 = new Date('2022-03-01T' + new_1);
-				const date2 = new Date('2022-03-01T' + new_2);
-				const timeDifference = date2.getTime() - date1.getTime();
-				// console.log(timeDifference);
-				const typeItem = this.types.find(type => type.name === participantRow[timeKey1]);
-				// console.log(participantRow[timeKey1]);
-				// console.log(typeItem);
-				const duration = timeDifference;
-				this.data.push({
-					name: typeItem.name,
-					value: [index + 1, date1.getTime(), date2.getTime(), duration], // 使用 index 区分数据
-					itemStyle: {
-						normal: {
-							color: typeItem.color
+
+		generateRountine(alldata, columns) {
+			this.data = []; // 清空之前的数据
+			for (let index = 0; index < 2; index++) {
+				const selectedId = (index ? this.selectedId2.id : this.selectedId1.id);
+				console.log("selectedId: ", selectedId);
+				const nullId = (selectedId == 'null' || selectedId == null || selectedId == undefined);
+				console.log("nullId: ", nullId);
+
+				const participantRow = alldata.find(row => String(parseInt(row.participantId)) === (nullId ? '2' : selectedId));
+				const timeKeys = Object.keys(participantRow).filter(key => key !== 'participantId');
+				for (let i = 1; i < columns.length - 1; i++) {
+					const timeKey1 = timeKeys[i]
+					const timeKey2 = timeKeys[i + 1]
+					const new_1 = this.createTimeStringWithLeadingZeros(String(timeKey1));
+					const new_2 = this.createTimeStringWithLeadingZeros(String(timeKey2));
+					const date1 = new Date('2022-03-01T' + new_1);
+					const date2 = new Date('2022-03-01T' + new_2);
+					const duration = date2.getTime() - date1.getTime();
+					const typeItem = this.types.find(type => type.name === participantRow[timeKey1]);
+					this.data.push({
+						name: nullId ? 'null' : typeItem.name,
+						value: [2 - index, date1.getTime(), date2.getTime(), duration], // 使用 index 区分数据
+						itemStyle: {
+							normal: {
+								color: nullId ? '#808080' : typeItem.color
+							}
 						}
-					}
-				});
-				baseTime += duration;
+					});
+				}
 			}
 		},
+
 		createTimeStringWithLeadingZeros(timeString) {
 			const parts = timeString.split(':');
 			const hours = parts[0].length < 2 ? '0' + parts[0] : parts[0];
 			return hours + ':' + parts[1] + ':' + parts[2];
 		},
+
 		renderChart() {
 			this.chart.setOption({
 				graphic: this.generateLegendGraphic(),
@@ -123,10 +152,9 @@ export default {
 					data: this.participantId,
 					axisLabel: {
 						formatter: (value) => {
-							return 'ID: ' + value;
+							return 'ID:' + value;
 						}
 					},
-
 				},
 				grid: {
 					height: '80%',
@@ -164,6 +192,8 @@ export default {
 					},
 					axisLabel: {
 						formatter: (val) => {
+							if (val >= 1000)
+								return 'ID' + val;
 							return 'ID ' + val;
 						}
 					},
@@ -185,6 +215,7 @@ export default {
 				]
 			});
 		},
+
 		renderItem(params, api) {
 			const categoryIndex = api.value(0);
 			const start = api.coord([api.value(1), categoryIndex]);
@@ -201,6 +232,7 @@ export default {
 				style: api.style()
 			};
 		},
+
 		generateLegendGraphic() {
 			const legendItemWidth = 10; // Width of each legend item
 			const legendItemHeight = 10; // Height of each legend item

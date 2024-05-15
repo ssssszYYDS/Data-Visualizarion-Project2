@@ -11,6 +11,7 @@ import { useRouter } from 'vue-router';
 import HttpHelper from '../common/utils/axios_helper';
 import Urls from '../common/urls/index';
 import bus from '../common/utils/bus';
+
 export default {
 	data() {
 		return {
@@ -61,13 +62,14 @@ export default {
 							}
 						},
 						labelLine: { show: false },
-						data: [{ "value": 1, "name": 'null' }]
+						data: [{ value: 0, name: 'null', itemStyle: { color: '#808080' } }
+						]
 					},
 					{
 						name: 'Participant ID null',
 						type: 'pie',
 						radius: ['45%', '60%'],
-						data: [{ "value": 1, "name": 'null' }]
+						data: [{ value: 0, name: 'null', itemStyle: { color: '#808080' } }],
 					}
 				]
 			}
@@ -105,8 +107,6 @@ export default {
 			try {
 				const centers = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/Clusters/Id_cluster.csv' });
 				this.alldata = centers;
-				// console.log("centers data: ");
-				// console.log(centers);
 				this.chartData1 = this.generateChartData(this.alldata, this.selectedId1.id);
 				this.chartData2 = this.generateChartData(this.alldata, this.selectedId2.id);
 			} catch (error) {
@@ -114,10 +114,6 @@ export default {
 			}
 		},
 		generateChartData(centers, selectedLabel) {
-			console.log('selectedLabel:', selectedLabel);
-			console.log('selectedLabel type:', typeof selectedLabel);
-			console.log('data:');
-			console.log(centers.map(item => ({ value: parseFloat(item[selectedLabel]), name: item[''] })).slice(5));
 			if (selectedLabel == 'null' || selectedLabel == null || selectedLabel == undefined)
 				return null;
 			return {
