@@ -72,7 +72,7 @@ export default {
 
 
 				console.log("buildings data: ");
-				console.log(buildings);
+				console.table(buildings.slice(0, 5));
 
 				if (buildings != null) {
 					this.drawBuildings(buildings);
@@ -158,6 +158,11 @@ export default {
 				.style("border", "0px solid white")
 				.style("border-radius", "10px");
 
+			// 创建一个 div 用于显示悬浮框内容
+			this.tooltip = d3.select("body").append("div")
+				.attr("class", "tooltip")
+				.style("opacity", 0);
+
 			this.xScale = d3.scaleLinear()
 				.domain([min_x, max_x])
 				.range([this.width * (1 - picture_range) / 2, this.width - this.width * (1 - picture_range) / 2]);
@@ -168,6 +173,9 @@ export default {
 			// await this.initBuildingsOpacityByApartment(buildings, this.initBuildingsOpacitySplit); // 根据租金设置建筑物的透明度
 			await this.initBuildingsOpacityByCheckin(this.buildings, this.initBuildingsOpacitySplit); // 根据checkin设置建筑物的透明度
 
+
+
+			// 添加悬浮框交互
 			this.svg.selectAll("polygon")
 				.data(data)
 				.enter()
@@ -182,6 +190,15 @@ export default {
 				.attr("stroke-width", 0.5)
 				.attr("stroke-opacity", d => d.opacity)
 				.on("mouseover", (event, d) => {
+					// 显示悬浮框并设置内容
+					this.tooltip.transition()
+						.duration(150)
+						.style("opacity", 0.9);
+					this.tooltip.html(`Building ID: ${d.buildingId}<br>Building Type: ${d.buildingType}`)
+						.style("left", (event.pageX + 24) + "px")
+						.style("top", (event.pageY + 24) + "px");
+
+					// 改变多边形样式
 					d3.select(event.currentTarget)
 						.attr("fill", "orange")
 						.attr("fill-opacity", 1.0)
@@ -189,12 +206,19 @@ export default {
 						.attr("stroke-opacity", 1.0);
 				})
 				.on("mouseout", (event, d) => {
+					// 隐藏悬浮框
+					this.tooltip.transition()
+						.duration(400)
+						.style("opacity", 0);
+
+					// 恢复多边形样式
 					d3.select(event.currentTarget)
 						.attr("fill", buildingType2color[d.buildingType])
 						.attr("fill-opacity", d.opacity)
 						.attr("stroke-width", 0.8)
 						.attr("stroke-opacity", d.opacity);
 				});
+
 		},
 
 		removeSvg() {
@@ -223,7 +247,7 @@ export default {
 
 				this.transports = transportsData
 				console.log("transports data: ");
-				console.log(this.transports);
+				console.table(this.transports.slice(0, 5));
 				if (transportsData != null) {
 					this.clearTransportsScatterPlot();
 
@@ -414,8 +438,8 @@ export default {
 			const label2Color = {
 				0: { "arrowColor": "orange", "circleColor": "orange" },
 				1: { "arrowColor": "yellow", "circleColor": "yellow" },
-				2: { "arrowColor": "green", "circleColor": "#00FF6A" },
-				3: { "arrowColor": "purple", "circleColor": "#FF66E5" },
+				2: { "arrowColor": "#66cc66", "circleColor": "#00FF6A" },
+				3: { "arrowColor": "#b953ec", "circleColor": "#FF66E5" },
 				4: { "arrowColor": "blue", "circleColor": "#24A0FF" },
 				5: { "arrowColor": "red", "circleColor": "#FF6B6B" },
 			};

@@ -42,7 +42,7 @@ export default {
 
 			this.riverData = riverData;
 			console.log('riverMap data: ');
-			console.log(this.riverData);
+			console.table(this.riverData.slice(0, 5));
 
 			this.drawRiverMap(this.riverData);
 		},

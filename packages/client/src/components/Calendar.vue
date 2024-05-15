@@ -72,7 +72,7 @@ export default {
 						splitLine: {
 							show: true,
 							lineStyle: {
-								color: '#000',
+								color: '#A09089',
 								width: 4,
 								type: 'solid'
 							}
@@ -100,7 +100,7 @@ export default {
 						itemStyle: {
 							color: '#323c48',
 							borderWidth: 1,
-							borderColor: '#111'
+							borderColor: '#A09089'
 						},
 						cellSize: [18, 18]
 					},
@@ -111,7 +111,7 @@ export default {
 						splitLine: {
 							show: true,
 							lineStyle: {
-								color: '#000',
+								color: '#A09089',
 								width: 4,
 								type: 'solid'
 							}
@@ -139,7 +139,7 @@ export default {
 						itemStyle: {
 							color: '#323c48',
 							borderWidth: 1,
-							borderColor: '#111'
+							borderColor: '#A09089'
 						},
 						cellSize: [18, 18]
 					},
@@ -150,7 +150,7 @@ export default {
 						splitLine: {
 							show: true,
 							lineStyle: {
-								color: '#000',
+								color: '#A09089',
 								width: 4,
 								type: 'solid'
 							}
@@ -178,7 +178,7 @@ export default {
 						itemStyle: {
 							color: '#323c48',
 							borderWidth: 1,
-							borderColor: '#111'
+							borderColor: '#A09089'
 						},
 						cellSize: [18, 18]
 					}

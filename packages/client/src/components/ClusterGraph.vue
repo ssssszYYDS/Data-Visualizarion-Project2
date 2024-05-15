@@ -45,7 +45,8 @@ export default {
 				const clusterData = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/Clusters/TSNE.csv' });
 				this.clusterData = clusterData;
 				console.log("cluster data: ");
-				console.log(this.clusterData);
+				console.table(this.clusterData.slice(0, 5));
+
 				const filteredData = await this.getFilteredData();
 
 				this.plotScatter(filteredData);
@@ -61,7 +62,7 @@ export default {
 
 				const filteredData = this.clusterData.filter((d) => occurrenceIdData.includes(d.id));
 				console.log("filtered cluster data: ");
-				console.log(filteredData);
+				console.table(filteredData.slice(0, 5));
 
 				if (filteredData != null) {
 					return filteredData;
@@ -111,7 +112,7 @@ export default {
 				.style("font-size", "16px")
 				.style("font-weight", "bold")
 				.text("Different Life Patterns");
-				
+
 			this.svg.selectAll("circle")
 				.data(data)
 				.enter()
@@ -133,7 +134,7 @@ export default {
 					.attr("stroke", "white")
 					.attr("stroke-dasharray", "5")
 					.attr("stroke-width", "1")
-					.attr("opacity", 0.8); 
+					.attr("opacity", 0.8);
 			}
 			for (let i = 1; i < 4; i++) {
 				this.svg.append("line")
@@ -144,7 +145,7 @@ export default {
 					.attr("stroke", "white")
 					.attr("stroke-dasharray", "5")
 					.attr("stroke-width", "1")
-					.attr("opacity", 0.8); 
+					.attr("opacity", 0.8);
 			}
 			const legendItemWidth = 60; // Width of each legend item
 			const legendItemMargin = 20; // Margin between legend items
@@ -159,19 +160,19 @@ export default {
 				.enter()
 				.append("g")
 				.attr("class", "legend-item")
-				.attr("transform", (d, i) => `translate(${i * (legendItemWidth + legendItemMargin)/1.8}, 0)`);
+				.attr("transform", (d, i) => `translate(${i * (legendItemWidth + legendItemMargin) / 1.8}, 0)`);
 
 			legendItems.append("rect")
 				.attr("x", 0)
 				.attr("y", 0)
-				.attr("width", legendItemWidth/2)
+				.attr("width", legendItemWidth / 2)
 				.attr("height", 8)
 				.attr("fill", (d) => this.colorScale(d));
 
 			legendItems.append("text")
 				.attr("x", legendItemWidth / 4)
 				.attr("y", 8)
-				.attr("text-anchor", "middle").style("font-size","10px")
+				.attr("text-anchor", "middle").style("font-size", "10px")
 				.text((d) => d);
 		},
 		selected(event, d, pageX, pageY) {
@@ -232,7 +233,8 @@ export default {
 	pointer-events: none;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
+
 .cluster-graph {
-    background-color: #404a59;
+	background-color: #404a59;
 }
 </style>

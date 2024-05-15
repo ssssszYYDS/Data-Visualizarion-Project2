@@ -24,6 +24,7 @@ export default {
 				{ name: 'AtRecreation', color: '#66cc66' },
 				{ name: 'AtRestaurant', color: '#cc0000' },
 				{ name: 'AtWork', color: '#9933cc' },
+				{ name: 'null', color: '#808080' },
 			],
 		};
 	},
@@ -94,9 +95,7 @@ export default {
 			this.data = []; // 清空之前的数据
 			for (let index = 0; index < 2; index++) {
 				const selectedId = (index ? this.selectedId2.id : this.selectedId1.id);
-				console.log("selectedId: ", selectedId);
 				const nullId = (selectedId == 'null' || selectedId == null || selectedId == undefined);
-				console.log("nullId: ", nullId);
 
 				const participantRow = alldata.find(row => String(parseInt(row.participantId)) === (nullId ? '2' : selectedId));
 				const timeKeys = Object.keys(participantRow).filter(key => key !== 'participantId');
@@ -109,15 +108,26 @@ export default {
 					const date2 = new Date('2022-03-01T' + new_2);
 					const duration = date2.getTime() - date1.getTime();
 					const typeItem = this.types.find(type => type.name === participantRow[timeKey1]);
-					this.data.push({
-						name: nullId ? 'null' : typeItem.name,
-						value: [2 - index, date1.getTime(), date2.getTime(), duration], // 使用 index 区分数据
-						itemStyle: {
-							normal: {
-								color: nullId ? '#808080' : typeItem.color
+					if (nullId || typeItem?.name == undefined)
+						this.data.push({
+							name: 'null',
+							value: [2 - index, date1.getTime(), date2.getTime(), duration], // 使用 index 区分数据
+							itemStyle: {
+								normal: {
+									color: '#808080'
+								}
 							}
-						}
-					});
+						});
+					else
+						this.data.push({
+							name: typeItem.name,
+							value: [2 - index, date1.getTime(), date2.getTime(), duration], // 使用 index 区分数据
+							itemStyle: {
+								normal: {
+									color: typeItem.color
+								}
+							}
+						});
 				}
 			}
 		},
@@ -262,7 +272,7 @@ export default {
 						},
 						{
 							type: 'text',
-							left: 0, // 文字左对齐
+							left: 0,
 							top: legendItemHeight + 2, // 放在颜色下方
 							style: {
 								text: type.name,

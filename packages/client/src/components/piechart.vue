@@ -207,11 +207,8 @@ export default {
 			let myChart = echarts.init(echartsRef);
 			let chartData = chartNumber === 1 ? this.chartData1 : this.chartData2;
 			if (chartData) {
-				console.log("chartData: ");
-				console.log(chartData);
 				myChart.setOption(chartData);
 			} else {
-				console.log("No data for chart " + chartNumber);
 				myChart.setOption(this.nullDataOption);
 			}
 		},
