@@ -52,6 +52,17 @@ export default {
 		},
 		generateChartData(centers, selectedLabel) {
 			return {
+				title:{
+					text: "ID " + selectedLabel+' Habit',
+					top: 'center',
+					right: 0 ,
+					textStyle: {
+					color: '#fff',
+					fontSize: 24,
+					fontStyle:'italic',
+				
+				}
+				},
 				tooltip: {
 					trigger: 'item',
 					formatter: '{a}: {d}%',
@@ -76,7 +87,10 @@ export default {
 					],
 					textStyle: {
 						color: '#fff'
-					}
+					},
+					itemWidth: 20, // 调整图例项宽度
+					itemHeight: 10, // 调整图例项高度
+					
 				},
 				series: [
 					{

@@ -1,5 +1,5 @@
 <template>
-	<div ref="chart" style="width: 100%; height: 80%;"></div>
+	<div ref="chart" style="width: 100%; height: 100%"></div>
 </template>
 
 <script>
@@ -13,11 +13,11 @@ export default {
 		return {
 			chart: null,
 			alldata: null,
-			alldata_1: null,
 			data: [],
 			columns: [],
 			participantId: ["1", "2"],
 			startTime: +new Date("2022-03-01T00:00:00"),
+			current_time: '2022-03-01',
 			types: [
 				{ name: 'AtHome', color: '#7b9ce1' },
 				{ name: 'Transport', color: '#bd6d6c' },
@@ -39,25 +39,31 @@ export default {
 			this.participantId.push(label);
 			this.loadData(); // 更新数据
 		});
+		bus.on('time', (time) => {
+			const label = String(time);
+			console.log(label);
+			this.current_time = label;
+			this.loadData(); // 更新数据
+		});
 	},
 	methods: {
 		async loadData() {
 			try {
 				this.data = []; // 清空之前的数据
-				const centers = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/2022-03-01.csv' });
-				const centers_1 = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/2022-03-05.csv' });
-				this.alldata = centers;
-				this.alldata_1 = centers_1;
+				const centers = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/dailyrountine/'+ this.current_time+'.csv' });
+				this.alldata = centers;	
+				console.table(this.alldata.slice(0, 5));
+				console.log('CSVData/dailyrountine/'+ this.current_time+'.csv');
+
 				const firstRow = centers[0];
 				this.columns = Object.keys(firstRow);
-				// console.log("money data colums: ",Object.keys(firstRow));
+				console.log("money data colums: ",Object.keys(firstRow));
 				// console.log("centers data: ");
 				// console.log(centers);
 				// console.log("participantRow:", this.columns);
 				this.generateRountine(this.alldata, this.participantId[0], this.columns, 0);
 				this.generateRountine(this.alldata, this.participantId[1], this.columns, 1);
-				// this.generateRountine(this.alldata_1, this.participantId[0],this.columns,2);
-				// this.generateRountine(this.alldata_1, this.participantId[1],this.columns,3);
+	
 				this.renderChart();
 			} catch (error) {
 				console.error("Failed to load centers data:", error);
@@ -65,7 +71,9 @@ export default {
 		},
 		generateRountine(alldata, initlabel, columns, index) {
 			let baseTime = this.startTime;
-			const participantRow = alldata.find(row => row.participantId === initlabel);
+			console.log(initlabel);
+			const participantRow = alldata.find(row => String(parseInt(row.participantId)) === initlabel);
+			console.log(participantRow)
 			const timeKeys = Object.keys(participantRow).filter(key => key !== 'participantId');
 			for (let i = 1; i < columns.length - 1; i++) {
 				const timeKey1 = timeKeys[i]
@@ -100,9 +108,18 @@ export default {
 		},
 		renderChart() {
 			this.chart.setOption({
+				graphic: this.generateLegendGraphic(),
 				tooltip: {
 					formatter: (params) => {
-						return params.marker + params.name + ': ' + params.value[3] + ' ms';
+						return params.marker + params.name + ': ' + 5 + ' min';
+					}
+				},
+				title: {
+					text: 'Daily Routine',
+					left: 'center',
+					textStyle: {
+						color: '#fff', // 设置图例文字颜色为白色
+						fontStyle:'italic'
 					}
 				},
 				xAxis: {
@@ -117,22 +134,9 @@ export default {
 						}
 					}
 				},
-				dataZoom: [
-					{
-						type: 'slider',
-						filterMode: 'weakFilter',
-						showDataShadow: false,
-						top: 400,
-						labelFormatter: ''
-					},
-					{
-						type: 'inside',
-						filterMode: 'weakFilter'
-					}
-				],
 				grid: {
-					height: '50%', // 使用百分比设置高度
-					// top: '-50px' // 调整y轴位置的值，可以根据需要调整
+					height: '80%', // 使用百分比设置高度
+					top:"15px"
 				},
 				xAxis: {
 					show: false,
@@ -140,13 +144,35 @@ export default {
 					scale: true,
 					axisLabel: {
 						formatter: (val) => {
-							return Math.max(0, val - this.startTime) + ' ms';
+							return Math.max(0, val - this.startTime)/(300) + ' ms';
 						}
+					},
+					axisLine: {
+						lineStyle: {
+							color: '#fff' // 设置轴线颜色为白色
+						}
+					},
+					axisTick: {
+						show: false, // 隐藏刻度线
 					}
 				},
 				yAxis: {
-					show: false,
+					show: true,
 					data: this.participantId,
+					axisLine: {
+						lineStyle: {
+							color: '#fff' // 设置轴线颜色为白色
+						}
+					},
+					axisTick: {
+						show: true, // 隐藏刻度线
+					},					
+					axisLabel: {
+						formatter: (val) => {
+							return "ID "+ val;
+						}
+					},
+					
 				},
 				series: [
 					{
@@ -173,13 +199,56 @@ export default {
 				type: 'rect',
 				shape: {
 					x: start[0],
-					y: start[1] - height / 2,
+					y: start[1] + height*1.2,
 					width: end[0] - start[0],
 					height: height
 				},
 				style: api.style()
 			};
-		}
+		},
+		generateLegendGraphic() {
+			const legendItemWidth = 10; // Width of each legend item
+			const legendItemHeight = 10; // Height of each legend item
+			const legendItemMargin = 5; // Margin between legend items
+			const legendWidth = legendItemWidth; // Total width of legend
+
+			return {
+				type: 'group',
+				right: 1,
+				top: 'center',
+				layout: 'vertical',
+				align: 'left',
+				children: this.types.map((type, index) => ({
+				type: 'group',
+				left: 0,
+				top: index * (legendItemHeight + legendItemMargin),
+				children: [
+					{
+					type: 'rect',
+					left: 0,
+					top: 0,
+					shape: {
+						width: legendItemWidth,
+						height: legendItemHeight,
+					},
+					style: {
+						fill: type.color,
+					},
+					},
+					{
+					type: 'text',
+					left: legendItemWidth + 5,
+					top: 3,
+					style: {
+						text: type.name,
+						fill: '#fff',
+						fontSize: 10,
+					},
+					},
+				],
+				})),
+			};
+			},
 	}
 };
 </script>

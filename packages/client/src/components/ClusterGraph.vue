@@ -102,13 +102,22 @@ export default {
 				.attr("height", "100%")
 				.style("background-color", "#404a59")
 				.style("border", "1px solid #ccc");
-
+			this.svg.append("text")
+				.attr("x", width / 2)
+				.attr("y", 30)
+				.attr("text-anchor", "middle")
+				.attr("fill", "#fff")
+				.attr("font-style", "italic")
+				.style("font-size", "24px")
+				.style("font-weight", "bold")
+				.text("Different Life Patterns");
+				
 			this.svg.selectAll("circle")
 				.data(data)
 				.enter()
 				.append("circle")
 				.attr("cx", (d) => this.xScale(d.X))
-				.attr("cy", (d) => this.yScale(d.Y))
+				.attr("cy", (d) => this.yScale(d.Y) + 8)
 				.attr("r", 1.8)
 				.attr("fill", (d) => this.colorScale(d.label))
 				.attr("id", (d, i) => i)

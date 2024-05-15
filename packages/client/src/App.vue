@@ -84,14 +84,12 @@ const handleSelectedIdUpdate = (newId, newLabel) => {
 			</button>
 		</div>
 		<div class="routine">
-			<button @click="toDetail" style="width: 100%; height: 100%;">
+			<button style="width: 100%; height: 100%; background-color: #404a59;">
 				<RountineComponent></RountineComponent>
 			</button>
 		</div>
 		<div class="overview">
 			<button style="width: 100%; height: 100%; background-color: #404a59;"><NewOverviewComponent></NewOverviewComponent></button>
-			
-
 		</div>
 	</div>
 </template>

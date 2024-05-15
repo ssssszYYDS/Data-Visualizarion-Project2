@@ -99,7 +99,6 @@ import { fa } from 'element-plus/es/locale/index.mjs';
                             this.Transport = this.Transport.map(value => (value * 24).toFixed(1));
       },
       renderChart() {
-        // 获取父容器的宽度和高度
         const myChart = echarts.init(this.$refs.main);
         myChart.setOption({
             title: {
@@ -108,6 +107,8 @@ import { fa } from 'element-plus/es/locale/index.mjs';
                 top:'3%',
                 textStyle: {
                 color: '#fff',
+                fontStyle:'italic',
+                fontSize: 25,
               }
             },
           legend: [
@@ -125,7 +126,7 @@ import { fa } from 'element-plus/es/locale/index.mjs';
                 right: '1%',
                 orient: 'vertical',
                 bottom: '20%',
-                inactiveColor: '#ccc', // 将第二套图例的所有项设置为灰色显示
+                inactiveColor: '#ccc', 
                 textStyle: {
                 color: '#fff',
               }
@@ -135,24 +136,23 @@ import { fa } from 'element-plus/es/locale/index.mjs';
         //     toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
         //     xAxisIndex: 0
         //   },
-          toolbox: {
-            feature: {
-              magicType: {
-                type: ['stack']
-              },
-              dataView: {}
-            }
-          },
+          // toolbox: {
+          //   feature: {
+          //     magicType: {
+          //       type: ['stack','line'],
+          //       title:{
+          //         stack: 'Switch to Stack'
+          //       }
+          //     },
+          //   }
+          // },
           tooltip: {
             trigger: 'axis',
             position: function (point, params, dom, rect, size) {
-                // 提示框浮动位置
                 var res = [point[0] + 10, point[1] - 10];
-                // 如果提示框超出了页面宽度，则放置在鼠标的左边
                 if (res[0] + size.contentSize[0] > size.viewSize[0]) {
                 res[0] = point[0] - size.contentSize[0] - 10;
                 }
-                // 如果提示框超出了页面高度，则放置在鼠标的上方
                 if (res[1] + size.contentSize[1] > size.viewSize[1]) {
                 res[1] = point[1] - size.contentSize[1] + 10;
                 }
@@ -294,8 +294,8 @@ import { fa } from 'element-plus/es/locale/index.mjs';
   
   <style scoped>
   .echarts-container {
-    width: 100%; /* 设置父容器的宽度为 100% */
-    height: 100%; /* 设置父容器的高度为 100% */
+    width: 100%; 
+    height: 100%;
   }
   .selected-data {
     margin-top: 20px;

@@ -7,7 +7,7 @@
 
 <script>
 import * as echarts from 'echarts';
-
+import bus from '../common/utils/bus';
 export default {
 	data() {
 		return {
@@ -38,13 +38,15 @@ export default {
 			const option = {
 				backgroundColor: '#404a59',
 				title: {
-				top: 60,
+	
 				text: 'Calendar',
-				subtext: '2022-3 to 2023-5',
+				// subtext: '2022-3 to 2023-5',
 				left: 'center',
+				top: 60,
 				textStyle: {
 					color: '#fff',
-					fontSize: 30
+					fontSize: 28,
+					fontStyle:'italic'
 				}
 				},
 				tooltip: {
@@ -80,10 +82,16 @@ export default {
 					color: '#fff',
 					position: 'top',
 					fontSize: 18, 
-					margin: 24
+					margin: 20
+					},
+					monthLabel: {
+						color: '#fff',
+						nameMap: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 					},
 					dayLabel: {
 					firstDay: 1,
+					fontFamily: 'Verdana',
+					color: '#FFFF00',
 					nameMap: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
 					margin: 5,
 					show: true
@@ -107,15 +115,21 @@ export default {
 						type: 'solid'
 					}
 					},
+					monthLabel: {
+						color: '#fff',
+						nameMap: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+					},
 					yearLabel: {
 					formatter: '{start}  2nd',
 					color: '#fff',
 					position: 'top',
 					fontSize: 18, 
-					margin: 24
+					margin: 20
 					},
 					dayLabel: {
 					firstDay: 1,
+					color: '#FFFF00',
+					fontFamily: 'Verdana',
 					nameMap: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
 					margin: 5,
 					show: true
@@ -139,15 +153,21 @@ export default {
 						type: 'solid'
 					}
 					},
+					monthLabel: {
+						color: '#fff',
+						nameMap: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+					},
 					yearLabel: {
 					formatter: '{start}  3rd',
 					color: '#fff',
 					position: 'top',
 					fontSize: 18, 
-					margin: 24
+					margin: 20
 					},
 					dayLabel: {
 					firstDay: 1,
+					fontFamily: 'Verdana',
+					color: '#FFFF00',
 					nameMap: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
 					margin: 5,
 					show: true
@@ -252,15 +272,15 @@ export default {
 				},
 				calendar: [{
 					cellSize: [this.cellWidth, this.cellWidth],
-					top: this.cellHeight
+					top: this.cellHeight*0.9
 				},
 				{
 					cellSize: [this.cellWidth, this.cellWidth],
-					top: this.cellHeight*2.2
+					top: this.cellHeight*2.1
 				},
 				{
 					cellSize: [this.cellWidth, this.cellWidth],
-					top: this.cellHeight*3.4
+					top: this.cellHeight*3.3
 				}],
 				series: [{
 					label: {
@@ -282,6 +302,7 @@ export default {
 		handleCellClick(params) {
 			if (params.componentType === 'series') {
 				this.$emit('update:date', params.value[0]); // 使用this.$emit而不是this.emit
+				bus.emit('time', params.value[0]);
 				alert('The day you have chose: ' + params.value[0]); // 显示正确的日期
 			}
 		},

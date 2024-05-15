@@ -62,7 +62,7 @@ export default {
 				.append('svg')
 				.attr('width', "100%")
 				.attr('height', "100%")
-				.style("background-color", "rgb(255, 255, 240)")
+				.style("background-color", "#404a59")
 				.style("border", "1px solid black");
 
 
@@ -129,7 +129,8 @@ export default {
 				.attr('y', "90%")
 				.attr('dy', '.35em')
 				.style('text-anchor', 'start')
-				.text((d) => d);
+				.text((d) => d)
+				.attr("fill", "#fff");
 		},
 
 		removeSvg() {
