@@ -80,7 +80,7 @@ const handleSelectedIdUpdate = (newId, newLabel) => {
 		</div>
 		<div class="daily-life-plot">
 			<button style="width: 100%; height: 100%; background-color: #404a59;">
-				<Piecomponent></Piecomponent>
+				<Piecomponent :selectedId1=selectedId1 :selectedId2=selectedId2></Piecomponent>
 			</button>
 		</div>
 		<div class="routine">
@@ -89,7 +89,9 @@ const handleSelectedIdUpdate = (newId, newLabel) => {
 			</button>
 		</div>
 		<div class="overview">
-			<button style="width: 100%; height: 100%; background-color: #404a59;"><NewOverviewComponent></NewOverviewComponent></button>
+			<button style="width: 100%; height: 100%; background-color: #404a59;">
+				<NewOverviewComponent></NewOverviewComponent>
+			</button>
 		</div>
 	</div>
 </template>

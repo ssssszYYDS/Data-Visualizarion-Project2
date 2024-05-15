@@ -115,10 +115,10 @@ export default {
 			const b = split - k / a;
 			buildings.forEach((building) => {
 				if (checkinJournalCounts[building.buildingId] == null)
-					building.opacity = 0.3;
+					building.opacity = split;
 				else {
 					const number = parseInt(checkinJournalCounts[building.buildingId].count);
-					// building.opacity = number / maxJournals * 0.7 + 0.3;
+					// building.opacity = number / maxJournals * (1 - split) + split;
 					building.opacity = k / (number + a) + b;
 				}
 			});
@@ -409,7 +409,6 @@ export default {
 		},
 
 		drawTransportsTracePlot(id1, label1, id2, label2) {
-			console.log("id1: " + id1 + ", label1: " + label1 + ", id2: " + id2 + ", label2: " + label2);
 			this.clearTransportsTracePlot();
 
 			const label2Color = {

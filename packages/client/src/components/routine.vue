@@ -53,14 +53,9 @@ export default {
 				const centers = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/dailyrountine/' + this.current_time + '.csv' });
 				this.alldata = centers;
 				console.table(this.alldata.slice(0, 5));
-				console.log('CSVData/dailyrountine/' + this.current_time + '.csv');
 
 				const firstRow = centers[0];
 				this.columns = Object.keys(firstRow);
-				console.log("money data colums: ", Object.keys(firstRow));
-				// console.log("centers data: ");
-				// console.log(centers);
-				// console.log("participantRow:", this.columns);
 				this.generateRountine(this.alldata, this.participantId[0], this.columns, 0);
 				this.generateRountine(this.alldata, this.participantId[1], this.columns, 1);
 
@@ -71,9 +66,7 @@ export default {
 		},
 		generateRountine(alldata, initlabel, columns, index) {
 			let baseTime = this.startTime;
-			console.log(initlabel);
 			const participantRow = alldata.find(row => String(parseInt(row.participantId)) === initlabel);
-			console.log(participantRow)
 			const timeKeys = Object.keys(participantRow).filter(key => key !== 'participantId');
 			for (let i = 1; i < columns.length - 1; i++) {
 				const timeKey1 = timeKeys[i]

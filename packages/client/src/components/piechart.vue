@@ -17,24 +17,89 @@ export default {
 			chartData1: null,
 			chartData2: null,
 			alldata: null,
-			initlabel1: '1', 
+			initlabel1: '1',
 			initlabel2: '2',
-			selectedLabels: []
+			selectedLabels: [],
+			nullDataOption: {
+				title: {
+					text: "ID null",
+					top: "20%",
+					right: 0,
+					textStyle: {
+						color: '#fff',
+						fontSize: 24,
+						fontStyle: 'italic',
+					}
+				},
+				tooltip: {
+					trigger: 'item',
+					formatter: '{a}: {d}%',
+				},
+				grid: {
+					right: "25%",
+					left: "25%",
+				},
+				legend: {
+					data: [
+						'null',
+					],
+					textStyle: { color: '#fff' },
+					itemWidth: 20, // 调整图例项宽度
+					itemHeight: 10, // 调整图例项高度
+				},
+				series: [
+					{
+						name: 'Money Weighting: ID null',
+						type: 'pie',
+						selectedMode: 'single',
+						radius: [0, '30%'],
+						label: {
+							position: 'inner',
+							fontSize: 10,
+							textStyle: {
+								color: '#fff'
+							}
+						},
+						labelLine: { show: false },
+						data: [{ "value": 1, "name": 'null' }]
+					},
+					{
+						name: 'Participant ID null',
+						type: 'pie',
+						radius: ['45%', '60%'],
+						data: [{ "value": 1, "name": 'null' }]
+					}
+				]
+			}
 		};
 	},
+
+	props: {
+		selectedId1: {
+			required: true,
+		},
+		selectedId2: {
+			required: true,
+		},
+	},
+
 	mounted() {
 		this.loadData();
-		bus.on('participantID', (participantID) => {
-			const label =  participantID;
-			if (this.selectedLabels.length >= 2) {
-				this.selectedLabels.shift();
-			}
-			this.selectedLabels.push(label);
-			console.log("selected labels: " + this.selectedLabels);
-			this.updateCharts(1);
-			this.updateCharts(2);
-		});
+		this.renderChart(1);
+		this.renderChart(2);
 	},
+
+	watch: {
+		selectedId1: function (newId) {
+			this.chartData1 = this.generateChartData(this.alldata, this.selectedId1.id);
+			this.renderChart(1);
+		},
+		selectedId2: function (newId) {
+			this.chartData2 = this.generateChartData(this.alldata, this.selectedId2.id);
+			this.renderChart(2);
+		}
+	},
+
 	methods: {
 		async loadData() {
 			try {
@@ -42,26 +107,29 @@ export default {
 				this.alldata = centers;
 				// console.log("centers data: ");
 				// console.log(centers);
-				this.chartData1 = this.generateChartData(this.alldata, this.initlabel1);
-				this.chartData2 = this.generateChartData(this.alldata, this.initlabel2);
-				this.renderChart(1);
-				this.renderChart(2);
+				this.chartData1 = this.generateChartData(this.alldata, this.selectedId1.id);
+				this.chartData2 = this.generateChartData(this.alldata, this.selectedId2.id);
 			} catch (error) {
 				console.error("Failed to load centers data:", error);
 			}
 		},
 		generateChartData(centers, selectedLabel) {
+			console.log('selectedLabel:', selectedLabel);
+			console.log('selectedLabel type:', typeof selectedLabel);
+			console.log('data:');
+			console.log(centers.map(item => ({ value: parseFloat(item[selectedLabel]), name: item[''] })).slice(5));
+			if (selectedLabel == 'null' || selectedLabel == null || selectedLabel == undefined)
+				return null;
 			return {
-				title:{
+				title: {
 					text: "ID " + selectedLabel,
 					top: "20%",
-					right: 0 ,
+					right: 0,
 					textStyle: {
-					color: '#fff',
-					fontSize: 24,
-					fontStyle:'italic',
-				
-				}
+						color: '#fff',
+						fontSize: 24,
+						fontStyle: 'italic',
+					}
 				},
 				tooltip: {
 					trigger: 'item',
@@ -90,7 +158,7 @@ export default {
 					},
 					itemWidth: 20, // 调整图例项宽度
 					itemHeight: 10, // 调整图例项高度
-					
+
 				},
 				series: [
 					{
@@ -114,53 +182,6 @@ export default {
 						name: 'Participant ID ' + selectedLabel,
 						type: 'pie',
 						radius: ['45%', '60%'],
-						// labelLine: {
-						// 	length: 15
-						// },
-						// label: {
-						// 	formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}/: }  {per|{d}%}',
-						// 	backgroundColor: '#F6F8FC',
-						// 	borderColor: '#8C8D8E',
-						// 	borderWidth: 1,
-						// 	borderRadius: 4,
-						// 	rich: {
-						// 		a: {
-						// 			color: '#4C5058',
-						// 			lineHeight: 20,
-						// 			fontSize: 14,
-						// 			fontWeight: 'bold',
-						// 			align: 'center'
-						// 		},
-						// 		hr: {
-						// 			borderColor: '#8C8D8E',
-						// 			width: '100%',
-						// 			borderWidth: 1,
-						// 			height: 0
-						// 		},
-						// 		b: {
-						// 			color: '#4C5058',
-						// 			fontSize: 13,
-						// 			fontWeight: 'bold',
-						// 			lineHeight: 20
-						// 		},
-						// 		per: {
-						// 			color: '#fff',
-						// 			backgroundColor: '#4C5058',
-						// 			padding: [3, 4],
-						// 			borderRadius: 4
-						// 		},
-						// 		p: {
-						// 			color: '#6E7079',
-						// 			lineHeight: 20,
-						// 			align: 'center'
-						// 		},
-						// 		c: {
-						// 			color: '#4C5058',
-						// 			lineHeight: 20,
-						// 			align: 'center'
-						// 		}
-						// 	}
-						// },
 						data: centers.map(item => ({ value: parseFloat(item[selectedLabel]), name: item[''] })).slice(0, 5)
 					}
 				]
@@ -174,20 +195,14 @@ export default {
 			let myChart = echarts.init(echartsRef);
 			let chartData = chartNumber === 1 ? this.chartData1 : this.chartData2;
 			if (chartData) {
+				console.log("chartData: ");
+				console.log(chartData);
 				myChart.setOption(chartData);
+			} else {
+				console.log("No data for chart " + chartNumber);
+				myChart.setOption(this.nullDataOption);
 			}
 		},
-		updateCharts() {
-			this.chartData1 = this.generateChartData(this.alldata, this.selectedLabels[0]);
-			if (this.selectedLabels[1] == null) {
-				this.chartData2 = this.generateChartData(this.alldata, this.initlabel2);
-			}
-			else {
-				this.chartData2 = this.generateChartData(this.alldata, this.selectedLabels[1]);
-			}
-			this.renderChart(1);
-			this.renderChart(2);
-		}
 	}
 };
 </script>

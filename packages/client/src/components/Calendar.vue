@@ -38,23 +38,23 @@ export default {
 			const option = {
 				backgroundColor: '#404a59',
 				title: {
-	
-				text: 'Calendar',
-				// subtext: '2022-3 to 2023-5',
-				left: 'center',
-				top: 60,
-				textStyle: {
-					color: '#fff',
-					fontSize: 28,
-					fontStyle:'italic'
-				}
+
+					text: 'Calendar',
+					// subtext: '2022-3 to 2023-5',
+					left: 'center',
+					top: 60,
+					textStyle: {
+						color: '#fff',
+						fontSize: 28,
+						fontStyle: 'italic'
+					}
 				},
 				tooltip: {
-				trigger: 'item',
-				formatter: function (params) {
-					const date = echarts.format.formatTime('yyyy-MM-dd', params.value[0]);
-					return '<span style="color: black; font-weight: bold;">Date:</span> ' + date;
-				}
+					trigger: 'item',
+					formatter: function (params) {
+						const date = echarts.format.formatTime('yyyy-MM-dd', params.value[0]);
+						return '<span style="color: black; font-weight: bold;">Date:</span> ' + date;
+					}
 				},
 				// legend: {
 				// top: '30',
@@ -65,171 +65,171 @@ export default {
 				// }
 				// },
 				calendar: [
-				{
-					top: 180,
-					left: 'center',
-					range: ['2022-03-01', '2022-7-31'],
-					splitLine: {
-					show: true,
-					lineStyle: {
-						color: '#000',
-						width: 4,
-						type: 'solid'
+					{
+						top: 180,
+						left: 'center',
+						range: ['2022-03-01', '2022-7-31'],
+						splitLine: {
+							show: true,
+							lineStyle: {
+								color: '#000',
+								width: 4,
+								type: 'solid'
+							}
+						},
+						yearLabel: {
+							formatter: '{start}  1st',
+							color: '#fff',
+							position: 'top',
+							fontSize: 18,
+							margin: 20
+						},
+						monthLabel: {
+							color: '#fff',
+							nameMap: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+						},
+						dayLabel: {
+							firstDay: 1,
+							fontFamily: 'Verdana',
+							color: '#FFFF00',
+							fontSize: 7,
+							nameMap: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+							margin: 5,
+							show: true
+						},
+						itemStyle: {
+							color: '#323c48',
+							borderWidth: 1,
+							borderColor: '#111'
+						},
+						cellSize: [18, 18]
+					},
+					{
+						top: 390,
+						left: 'center',
+						range: ['2022-8-1', '2022-12-31'],
+						splitLine: {
+							show: true,
+							lineStyle: {
+								color: '#000',
+								width: 4,
+								type: 'solid'
+							}
+						},
+						monthLabel: {
+							color: '#fff',
+							nameMap: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+						},
+						yearLabel: {
+							formatter: '{start}  2nd',
+							color: '#fff',
+							position: 'top',
+							fontSize: 18,
+							margin: 20
+						},
+						dayLabel: {
+							firstDay: 1,
+							color: '#FFFF00',
+							fontFamily: 'Verdana',
+							fontSize: 7,
+							nameMap: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+							margin: 5,
+							show: true
+						},
+						itemStyle: {
+							color: '#323c48',
+							borderWidth: 1,
+							borderColor: '#111'
+						},
+						cellSize: [18, 18]
+					},
+					{
+						top: 600,
+						left: 'center',
+						range: ['2023-1-1', '2023-5-24'],
+						splitLine: {
+							show: true,
+							lineStyle: {
+								color: '#000',
+								width: 4,
+								type: 'solid'
+							}
+						},
+						monthLabel: {
+							color: '#fff',
+							nameMap: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+						},
+						yearLabel: {
+							formatter: '{start}  3rd',
+							color: '#fff',
+							position: 'top',
+							fontSize: 18,
+							margin: 20
+						},
+						dayLabel: {
+							firstDay: 1,
+							fontFamily: 'Verdana',
+							color: '#FFFF00',
+							fontSize: 7,
+							nameMap: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+							margin: 5,
+							show: true
+						},
+						itemStyle: {
+							color: '#323c48',
+							borderWidth: 1,
+							borderColor: '#111'
+						},
+						cellSize: [18, 18]
 					}
-					},
-					yearLabel: {
-					formatter: '{start}  1st',
-					color: '#fff',
-					position: 'top',
-					fontSize: 18, 
-					margin: 20
-					},
-					monthLabel: {
-						color: '#fff',
-						nameMap: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-					},
-					dayLabel: {
-					firstDay: 1,
-					fontFamily: 'Verdana',
-					color: '#FFFF00',
-					fontSize: 7,
-					nameMap: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-					margin: 5,
-					show: true
-					},
-					itemStyle: {
-					color: '#323c48',
-					borderWidth: 1,
-					borderColor: '#111'
-					},
-					cellSize: [18, 18]
-				},
-				{
-					top: 390,
-					left: 'center',
-					range: ['2022-8-1', '2022-12-31'],
-					splitLine: {
-					show: true,
-					lineStyle: {
-						color: '#000',
-						width: 4,
-						type: 'solid'
-					}
-					},
-					monthLabel: {
-						color: '#fff',
-						nameMap: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-					},
-					yearLabel: {
-					formatter: '{start}  2nd',
-					color: '#fff',
-					position: 'top',
-					fontSize: 18, 
-					margin: 20
-					},
-					dayLabel: {
-					firstDay: 1,
-					color: '#FFFF00',
-					fontFamily: 'Verdana',
-					fontSize: 7, 
-					nameMap: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-					margin: 5,
-					show: true
-					},
-					itemStyle: {
-					color: '#323c48',
-					borderWidth: 1,
-					borderColor: '#111'
-					},
-					cellSize: [18, 18]
-				},
-				{
-					top: 600,
-					left: 'center',
-					range: ['2023-1-1', '2023-5-24'],
-					splitLine: {
-					show: true,
-					lineStyle: {
-						color: '#000',
-						width: 4,
-						type: 'solid'
-					}
-					},
-					monthLabel: {
-						color: '#fff',
-						nameMap: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-					},
-					yearLabel: {
-					formatter: '{start}  3rd',
-					color: '#fff',
-					position: 'top',
-					fontSize: 18, 
-					margin: 20
-					},
-					dayLabel: {
-					firstDay: 1,
-					fontFamily: 'Verdana',
-					color: '#FFFF00',
-					fontSize: 7,
-					nameMap: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-					margin: 5,
-					show: true
-					},
-					itemStyle: {
-					color: '#323c48',
-					borderWidth: 1,
-					borderColor: '#111'
-					},
-					cellSize: [18, 18]
-				}
 				],
 				series: [
-				{
-					type: 'scatter',
-					coordinateSystem: 'calendar',
-					symbol: 'rect',
-					symbolSize: function (val) {
-					return [20, 20];
-					},
-					itemStyle: {
-					color: 'transparent'
-					},
-					label: {
-					show: true,
-					fontWeight: 'bold',
-					formatter: function (params) {
-						return echarts.format.formatTime('dd', params.value[0]);
-					},
-					color: '#fff',
-					fontFamily: 'Arial',
-					fontSize: 9,
-					offset: [0, 0]
-					},
-					data: this.getVirtualData("2022")
-				},
-				{
-					type: 'scatter',
-					coordinateSystem: 'calendar',
-					calendarIndex: 1, // 指定该系列属于第二个日历
-					symbol: 'rect',
-					symbolSize: function (val) {
-						return [20, 20];
-					},
-					itemStyle: {
-						color: 'transparent'
-					},
-					label: {
-						show: true,
-						fontWeight: 'bold',
-						formatter: function (params) {
-						return echarts.format.formatTime('dd', params.value[0]);
+					{
+						type: 'scatter',
+						coordinateSystem: 'calendar',
+						symbol: 'rect',
+						symbolSize: function (val) {
+							return [20, 20];
 						},
-						color: '#fff',
-						fontFamily: 'Arial',
-						fontSize: 10,
-						offset: [0, 0],
+						itemStyle: {
+							color: 'transparent'
+						},
+						label: {
+							show: true,
+							fontWeight: 'bold',
+							formatter: function (params) {
+								return echarts.format.formatTime('dd', params.value[0]);
+							},
+							color: '#fff',
+							fontFamily: 'Arial',
+							fontSize: 9,
+							offset: [0, 0]
+						},
+						data: this.getVirtualData("2022")
 					},
-					data: this.getVirtualData("2022") // 填充您的虚拟数据
+					{
+						type: 'scatter',
+						coordinateSystem: 'calendar',
+						calendarIndex: 1, // 指定该系列属于第二个日历
+						symbol: 'rect',
+						symbolSize: function (val) {
+							return [20, 20];
+						},
+						itemStyle: {
+							color: 'transparent'
+						},
+						label: {
+							show: true,
+							fontWeight: 'bold',
+							formatter: function (params) {
+								return echarts.format.formatTime('dd', params.value[0]);
+							},
+							color: '#fff',
+							fontFamily: 'Arial',
+							fontSize: 10,
+							offset: [0, 0],
+						},
+						data: this.getVirtualData("2022") // 填充您的虚拟数据
 					},
 					{
 						type: 'scatter',
@@ -246,7 +246,7 @@ export default {
 							show: true,
 							fontWeight: 'bold',
 							formatter: function (params) {
-							return echarts.format.formatTime('dd', params.value[0]);
+								return echarts.format.formatTime('dd', params.value[0]);
 							},
 							color: '#fff',
 							fontFamily: 'Arial',
@@ -266,38 +266,36 @@ export default {
 			const width = chartDom.clientWidth;
 			const height = chartDom.clientHeight - 50;
 			this.cellWidth = Math.floor(width / 26); // 每周7天
-			this.cellHeight =  Math.floor(height / 4); // 6行
-			console.log(this.cellWidth)
-			console.log(this.cellHeight)
+			this.cellHeight = Math.floor(height / 4); // 6行
 			this.calendarInstance.setOption({
-				title:{
-					top: this.cellHeight/6,
+				title: {
+					top: this.cellHeight / 6,
 				},
 				calendar: [{
 					cellSize: [this.cellWidth, this.cellWidth],
-					top: this.cellHeight*0.9
+					top: this.cellHeight * 0.9
 				},
 				{
 					cellSize: [this.cellWidth, this.cellWidth],
-					top: this.cellHeight*2.1
+					top: this.cellHeight * 2.1
 				},
 				{
 					cellSize: [this.cellWidth, this.cellWidth],
-					top: this.cellHeight*3.3
+					top: this.cellHeight * 3.3
 				}],
 				series: [{
 					label: {
-						fontSize: this.cellWidth/2 + 1
+						fontSize: this.cellWidth / 2 + 1
 					}
 				},
 				{
 					label: {
-						fontSize: this.cellWidth/2 + 1
+						fontSize: this.cellWidth / 2 + 1
 					}
 				},
 				{
 					label: {
-						fontSize: this.cellWidth/2 + 1
+						fontSize: this.cellWidth / 2 + 1
 					}
 				}]
 			});
