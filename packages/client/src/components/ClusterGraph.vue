@@ -104,7 +104,7 @@ export default {
 				.style("border", "1px solid #ccc");
 			this.svg.append("text")
 				.attr("x", width / 2)
-				.attr("y", 30)
+				.attr("y", 20)
 				.attr("text-anchor", "middle")
 				.attr("fill", "#fff")
 				.attr("font-style", "italic")
@@ -147,31 +147,31 @@ export default {
 					.attr("opacity", 0.8); 
 			}
 			const legendItemWidth = 60; // Width of each legend item
-			const legendItemMargin = 10; // Margin between legend items
+			const legendItemMargin = 20; // Margin between legend items
 			const legendWidth = uniqueLabels.length * (legendItemWidth + legendItemMargin); // Total width of legend
 
 			const legend = this.svg.append("g")
 				.attr("class", "legend")
-				.attr("transform", `translate(${(width - legendWidth) / 2}, ${height - 15})`);
+				.attr("transform", `translate(${(width - legendWidth) / 120}, ${height - 8})`);
 
 			const legendItems = legend.selectAll(".legend-item")
 				.data(uniqueLabels)
 				.enter()
 				.append("g")
 				.attr("class", "legend-item")
-				.attr("transform", (d, i) => `translate(${i * (legendItemWidth + legendItemMargin)}, 0)`);
+				.attr("transform", (d, i) => `translate(${i * (legendItemWidth + legendItemMargin)/1.8}, 0)`);
 
 			legendItems.append("rect")
 				.attr("x", 0)
 				.attr("y", 0)
-				.attr("width", legendItemWidth)
-				.attr("height", 16)
+				.attr("width", legendItemWidth/2)
+				.attr("height", 8)
 				.attr("fill", (d) => this.colorScale(d));
 
 			legendItems.append("text")
-				.attr("x", legendItemWidth / 2)
-				.attr("y", 13)
-				.attr("text-anchor", "middle")
+				.attr("x", legendItemWidth / 4)
+				.attr("y", 8)
+				.attr("text-anchor", "middle").style("font-size","10px")
 				.text((d) => d);
 		},
 		selected(event, d, pageX, pageY) {
@@ -179,7 +179,7 @@ export default {
 				.transition()
 				.duration(200)
 				.attr("r", 8)
-				.attr("stroke", "black")
+				.attr("stroke", "white")
 				.attr("stroke-width", "2px");
 			this.showTooltip(d, pageX, pageY);
 		},

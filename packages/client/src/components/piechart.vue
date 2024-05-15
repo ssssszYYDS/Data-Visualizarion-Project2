@@ -53,9 +53,9 @@ export default {
 		generateChartData(centers, selectedLabel) {
 			return {
 				title:{
-					text: "ID " + selectedLabel,
-					top: "20%",
-					right: 0 ,
+					text: "ID " + selectedLabel + " Habit",
+					top: 35,
+					right: "center" ,
 					textStyle: {
 					color: '#fff',
 					fontSize: 24,
@@ -68,17 +68,19 @@ export default {
 					formatter: '{a}: {d}%',
 				},
 				grid: {
+					top: '100%', // 调整图表向上移动的值
 					right: "25%",
 					left: "25%",
+				
 				},
 				legend: {
 
 					data: [
 						'Home',
-						'Work',
 						'Transport',
-						'Restaurant',
 						'Recreation',
+						'Restaurant',
+						'Work',
 						'Wage',
 						'Shelter',
 						'Edu',
@@ -90,14 +92,15 @@ export default {
 					},
 					itemWidth: 20, // 调整图例项宽度
 					itemHeight: 10, // 调整图例项高度
-					
+					bottom:26,
 				},
 				series: [
 					{
-						name: 'Money Weighting: ID ' + selectedLabel,
+						name: 'Money Weighting',
 						type: 'pie',
 						selectedMode: 'single',
 						radius: [0, '30%'],
+
 						label: {
 							position: 'inner',
 							fontSize: 10,
@@ -108,12 +111,21 @@ export default {
 						labelLine: {
 							show: false
 						},
-						data: centers.map(item => ({ value: parseFloat(item[selectedLabel]), name: item[''] })).slice(5)
+						data: centers.map((item, index) => ({
+							value: parseFloat(item[selectedLabel]),
+							name: item[''],
+							itemStyle: {
+								color: ['#0077cc', '#ffbb33', '#66cc66', '#cc0000', '#9933cc', '#46B0FF', '#ff69b4', '#33FF49', '#6600cc', '#ff8800'][index]
+							}
+						})).slice(5)
 					},
 					{
-						name: 'Participant ID ' + selectedLabel,
+						name: 'Time Weighting',
 						type: 'pie',
 						radius: ['45%', '60%'],
+						// itemStyle:{
+						// 	color:['#0077cc','#ffbb33','#66cc66','#cc0000', '#9933cc']
+						// },
 						// labelLine: {
 						// 	length: 15
 						// },
@@ -161,7 +173,13 @@ export default {
 						// 		}
 						// 	}
 						// },
-						data: centers.map(item => ({ value: parseFloat(item[selectedLabel]), name: item[''] })).slice(0, 5)
+						data: centers.map((item, index) => ({
+							value: parseFloat(item[selectedLabel]),
+							name: item[''],
+							itemStyle: {
+								color: ['#0077cc', '#ffbb33', '#66cc66', '#cc0000', '#9933cc', '#46B0FF', '#ff69b4', '#33FF49', '#6600cc', '#ff8800'][index]
+							}
+						})).slice(0, 5)
 					}
 				]
 			};
@@ -196,6 +214,7 @@ export default {
 .echarts-container {
 	width: 100%;
 	height: 400px;
-	margin-bottom: -20px;
+	/* margin-bottom: 0px; */
+	margin-top: -36px;
 }
 </style>

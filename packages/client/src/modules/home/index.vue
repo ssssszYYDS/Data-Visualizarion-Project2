@@ -303,8 +303,8 @@ export default {
 			this.clearTimeText();
 			this.curRealTime = this.date + d3.timeFormat(' %H:%M:%S')(new Date(this.curTime));
 			this.svg.append("text")
-				.attr("x", "95%")
-				.attr("y", "95%")
+				.attr("x", "35%")
+				.attr("y", "5%")
 				.attr("text-anchor", "end")
 				.attr("dominant-baseline", "bottom")
 				.style("font-size", "30px")

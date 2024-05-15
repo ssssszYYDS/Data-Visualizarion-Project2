@@ -306,7 +306,6 @@ export default {
 			if (params.componentType === 'series') {
 				this.$emit('update:date', params.value[0]); // 使用this.$emit而不是this.emit
 				bus.emit('time', params.value[0]);
-				alert('The day you have chose: ' + params.value[0]); // 显示正确的日期
 			}
 		},
 		getVirtualData(year) {

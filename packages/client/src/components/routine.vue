@@ -19,11 +19,11 @@ export default {
 			startTime: +new Date("2022-03-01T00:00:00"),
 			current_time: '2022-03-01',
 			types: [
-				{ name: 'AtHome', color: '#009cff' },
-				{ name: 'Transport', color: '#ffa500' },
-				{ name: 'AtRecreation', color: '#75f874' },
-				{ name: 'AtRestaurant', color: '#ff0000' },
-				{ name: 'AtWork', color: '#8a2be2' },
+				{ name: 'AtHome', color: '#0077cc' },
+				{ name: 'Transport', color: '#ffbb33' },
+				{ name: 'AtRecreation', color: '#66cc66' },
+				{ name: 'AtRestaurant', color: '#cc0000' },
+				{ name: 'AtWork', color: '#9933cc' },
 			]
 		};
 	},
@@ -50,20 +50,20 @@ export default {
 		async loadData() {
 			try {
 				this.data = []; // 清空之前的数据
-				const centers = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/dailyrountine/' + this.current_time + '.csv' });
-				this.alldata = centers;
+				const centers = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/dailyrountine/'+ this.current_time+'.csv' });
+				this.alldata = centers;	
 				console.table(this.alldata.slice(0, 5));
-				console.log('CSVData/dailyrountine/' + this.current_time + '.csv');
+				console.log('CSVData/dailyrountine/'+ this.current_time+'.csv');
 
 				const firstRow = centers[0];
 				this.columns = Object.keys(firstRow);
-				console.log("money data colums: ", Object.keys(firstRow));
+				console.log("money data colums: ",Object.keys(firstRow));
 				// console.log("centers data: ");
 				// console.log(centers);
 				// console.log("participantRow:", this.columns);
 				this.generateRountine(this.alldata, this.participantId[0], this.columns, 0);
 				this.generateRountine(this.alldata, this.participantId[1], this.columns, 1);
-
+	
 				this.renderChart();
 			} catch (error) {
 				console.error("Failed to load centers data:", error);
@@ -111,32 +111,34 @@ export default {
 				graphic: this.generateLegendGraphic(),
 				tooltip: {
 					formatter: (params) => {
-						return params.marker + params.name + ': ' + 5 + ' min';
+						return params.marker + params.name ;
 					}
 				},
 				title: {
 					text: 'Daily Routine',
 					left: 'center',
 					textStyle: {
-						color: '#fff', // 设置图例文字颜色为白色
-						fontStyle: 'italic'
+						color: '#fff', 
+						fontStyle:'italic'
 					}
 				},
 				xAxis: {
-					show: false // 隐藏 x 轴
+					show: false 
 				},
 				yAxis: {
 					type: 'category',
 					data: this.participantId,
 					axisLabel: {
 						formatter: (value) => {
-							return 'ID: ' + value; // 格式化显示 ID
+							return 'ID: ' + value; 
 						}
-					}
+					},
+	
 				},
 				grid: {
-					height: '80%', // 使用百分比设置高度
-					top: "15px"
+					height: '80%', 
+					top:"15px",
+					left: "50px"
 				},
 				xAxis: {
 					show: false,
@@ -144,16 +146,16 @@ export default {
 					scale: true,
 					axisLabel: {
 						formatter: (val) => {
-							return Math.max(0, val - this.startTime) / (300) + ' ms';
+							return Math.max(0, val - this.startTime)/(300) + ' ms';
 						}
 					},
 					axisLine: {
 						lineStyle: {
-							color: '#fff' // 设置轴线颜色为白色
+							color: '#fff'
 						}
 					},
 					axisTick: {
-						show: false, // 隐藏刻度线
+						show: false,
 					}
 				},
 				yAxis: {
@@ -161,18 +163,18 @@ export default {
 					data: this.participantId,
 					axisLine: {
 						lineStyle: {
-							color: '#fff' // 设置轴线颜色为白色
+							color: '#fff' 
 						}
 					},
 					axisTick: {
-						show: true, // 隐藏刻度线
-					},
+						show: true, 
+					},					
 					axisLabel: {
 						formatter: (val) => {
-							return "ID " + val;
+							return  'ID ' + val;
 						}
 					},
-
+					// offset: -10
 				},
 				series: [
 					{
@@ -199,7 +201,7 @@ export default {
 				type: 'rect',
 				shape: {
 					x: start[0],
-					y: start[1] + height * 1.2,
+					y: start[1] + height*1.2,
 					width: end[0] - start[0],
 					height: height
 				},
@@ -209,46 +211,45 @@ export default {
 		generateLegendGraphic() {
 			const legendItemWidth = 10; // Width of each legend item
 			const legendItemHeight = 10; // Height of each legend item
-			const legendItemMargin = 5; // Margin between legend items
-			const legendWidth = legendItemWidth; // Total width of legend
+			const legendItemMargin = 50; // Margin between legend items
 
 			return {
 				type: 'group',
-				right: 1,
-				top: 'center',
-				layout: 'vertical',
-				align: 'left',
+				left: 'center', // 居中显示
+				bottom: 2, // 距离底部一定距离
+				layout: 'horizontal', // 横向布局
+				align: 'auto', // 自动对齐
 				children: this.types.map((type, index) => ({
-					type: 'group',
+				type: 'group',
+				left: index = legendItemMargin + index * (legendItemWidth + legendItemMargin),
+				children: [
+					{
+					type: 'rect',
 					left: 0,
-					top: index * (legendItemHeight + legendItemMargin),
-					children: [
-						{
-							type: 'rect',
-							left: 0,
-							top: 0,
-							shape: {
-								width: legendItemWidth,
-								height: legendItemHeight,
-							},
-							style: {
-								fill: type.color,
-							},
-						},
-						{
-							type: 'text',
-							left: legendItemWidth + 5,
-							top: 3,
-							style: {
-								text: type.name,
-								fill: '#fff',
-								fontSize: 10,
-							},
-						},
-					],
+					top: 0,
+					shape: {
+						width: legendItemWidth,
+						height: legendItemHeight,
+					},
+					style: {
+						fill: type.color,
+					},
+					},
+					{
+					type: 'text',
+					left: 0, // 文字左对齐
+					top: legendItemHeight + 2, // 放在颜色下方
+					style: {
+						text: type.name,
+						fill: '#fff',
+						fontSize: 8,
+					},
+					},
+				],
 				})),
 			};
-		},
+			},
+
 	}
 };
 </script>
