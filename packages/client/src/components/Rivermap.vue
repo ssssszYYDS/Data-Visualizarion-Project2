@@ -82,7 +82,7 @@ export default {
 			const colorScale = d3
 				.scaleOrdinal()
 				.domain(states)
-				.range(d3.schemeCategory10);
+				.range(['#0077cc', '#ffbb33', '#66cc66', '#cc0000', '#9933cc']);
 
 
 			var timeStampsY0 = {};
