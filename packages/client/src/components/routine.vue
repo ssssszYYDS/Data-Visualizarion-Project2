@@ -19,11 +19,11 @@ export default {
 			startTime: +new Date("2022-03-01T00:00:00"),
 			current_time: '2022-03-01',
 			types: [
-				{ name: 'AtHome', color: '#009cff' },
-				{ name: 'Transport', color: '#ffa500' },
-				{ name: 'AtRecreation', color: '#75f874' },
-				{ name: 'AtRestaurant', color: '#ff0000' },
-				{ name: 'AtWork', color: '#8a2be2' },
+				{ name: 'AtHome', color: '#0077cc' },
+				{ name: 'Transport', color: '#ffbb33' },
+				{ name: 'AtRecreation', color: '#66cc66' },
+				{ name: 'AtRestaurant', color: '#cc0000' },
+				{ name: 'AtWork', color: '#9933cc' },
 			]
 		};
 	},
@@ -104,32 +104,34 @@ export default {
 				graphic: this.generateLegendGraphic(),
 				tooltip: {
 					formatter: (params) => {
-						return params.marker + params.name + ': ' + 5 + ' min';
+						return params.marker + params.name;
 					}
 				},
 				title: {
 					text: 'Daily Routine',
 					left: 'center',
 					textStyle: {
-						color: '#fff', // 设置图例文字颜色为白色
+						color: '#fff',
 						fontStyle: 'italic'
 					}
 				},
 				xAxis: {
-					show: false // 隐藏 x 轴
+					show: false
 				},
 				yAxis: {
 					type: 'category',
 					data: this.participantId,
 					axisLabel: {
 						formatter: (value) => {
-							return 'ID: ' + value; // 格式化显示 ID
+							return 'ID: ' + value;
 						}
-					}
+					},
+
 				},
 				grid: {
-					height: '80%', // 使用百分比设置高度
-					top: "15px"
+					height: '80%',
+					top: "15px",
+					left: "50px"
 				},
 				xAxis: {
 					show: false,
@@ -142,11 +144,11 @@ export default {
 					},
 					axisLine: {
 						lineStyle: {
-							color: '#fff' // 设置轴线颜色为白色
+							color: '#fff'
 						}
 					},
 					axisTick: {
-						show: false, // 隐藏刻度线
+						show: false,
 					}
 				},
 				yAxis: {
@@ -154,18 +156,18 @@ export default {
 					data: this.participantId,
 					axisLine: {
 						lineStyle: {
-							color: '#fff' // 设置轴线颜色为白色
+							color: '#fff'
 						}
 					},
 					axisTick: {
-						show: true, // 隐藏刻度线
+						show: true,
 					},
 					axisLabel: {
 						formatter: (val) => {
-							return "ID " + val;
+							return 'ID ' + val;
 						}
 					},
-
+					// offset: -10
 				},
 				series: [
 					{
@@ -202,19 +204,17 @@ export default {
 		generateLegendGraphic() {
 			const legendItemWidth = 10; // Width of each legend item
 			const legendItemHeight = 10; // Height of each legend item
-			const legendItemMargin = 5; // Margin between legend items
-			const legendWidth = legendItemWidth; // Total width of legend
+			const legendItemMargin = 50; // Margin between legend items
 
 			return {
 				type: 'group',
-				right: 1,
-				top: 'center',
-				layout: 'vertical',
-				align: 'left',
+				left: 'center', // 居中显示
+				bottom: 2, // 距离底部一定距离
+				layout: 'horizontal', // 横向布局
+				align: 'center', // 自动对齐
 				children: this.types.map((type, index) => ({
 					type: 'group',
-					left: 0,
-					top: index * (legendItemHeight + legendItemMargin),
+					left: index = legendItemMargin + index * (legendItemWidth + legendItemMargin),
 					children: [
 						{
 							type: 'rect',
@@ -230,18 +230,19 @@ export default {
 						},
 						{
 							type: 'text',
-							left: legendItemWidth + 5,
-							top: 3,
+							left: 0, // 文字左对齐
+							top: legendItemHeight + 2, // 放在颜色下方
 							style: {
 								text: type.name,
 								fill: '#fff',
-								fontSize: 10,
+								fontSize: 8,
 							},
 						},
 					],
 				})),
 			};
 		},
+
 	}
 };
 </script>
