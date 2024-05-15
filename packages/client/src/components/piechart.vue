@@ -37,6 +37,7 @@ export default {
 					formatter: '{a}: {d}%',
 				},
 				grid: {
+					top: '100%', // 调整图表向上移动的值
 					right: "25%",
 					left: "25%",
 				},
@@ -44,9 +45,12 @@ export default {
 					data: [
 						'null',
 					],
-					textStyle: { color: '#fff' },
+					textStyle: {
+						color: '#fff'
+					},
 					itemWidth: 20, // 调整图例项宽度
 					itemHeight: 10, // 调整图例项高度
+					bottom: 26,
 				},
 				series: [
 					{
@@ -135,7 +139,6 @@ export default {
 					top: '100%', // 调整图表向上移动的值
 					right: "25%",
 					left: "25%",
-
 				},
 				legend: {
 					data: [
@@ -177,7 +180,7 @@ export default {
 							value: parseFloat(item[selectedLabel]),
 							name: item[''],
 							itemStyle: {
-								color: ['#0077cc', '#ffbb33', '#66cc66', '#cc0000', '#9933cc', '#46B0FF', '#ff69b4', '#33FF49', '#6600cc', '#ff8800'][index]
+								color: ['#0077cc', '#9933cc', '#ffbb33', '#cc0000', '#66cc66', '#46B0FF', '#ff69b4', '#33FF49', '#6600cc', '#ff8800'][index]
 							}
 						})).slice(5)
 					},
@@ -189,7 +192,7 @@ export default {
 							value: parseFloat(item[selectedLabel]),
 							name: item[''],
 							itemStyle: {
-								color: ['#0077cc', '#ffbb33', '#66cc66', '#cc0000', '#9933cc', '#46B0FF', '#ff69b4', '#33FF49', '#6600cc', '#ff8800'][index]
+								color: ['#0077cc', '#9933cc', '#ffbb33', '#cc0000', '#66cc66', '#46B0FF', '#ff69b4', '#33FF49', '#6600cc', '#ff8800'][index]
 							}
 						})).slice(0, 5)
 					}
