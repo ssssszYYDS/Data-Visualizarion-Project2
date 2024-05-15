@@ -92,6 +92,7 @@ export default {
 					firstDay: 1,
 					fontFamily: 'Verdana',
 					color: '#FFFF00',
+					fontSize: 7,
 					nameMap: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
 					margin: 5,
 					show: true
@@ -130,6 +131,7 @@ export default {
 					firstDay: 1,
 					color: '#FFFF00',
 					fontFamily: 'Verdana',
+					fontSize: 7, 
 					nameMap: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
 					margin: 5,
 					show: true
@@ -168,6 +170,7 @@ export default {
 					firstDay: 1,
 					fontFamily: 'Verdana',
 					color: '#FFFF00',
+					fontSize: 7,
 					nameMap: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
 					margin: 5,
 					show: true

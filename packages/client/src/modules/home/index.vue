@@ -29,13 +29,13 @@ export default {
 			width: null, // SVG图 宽度
 			height: null, // SVG图 高度
 			buildings: null, // 建筑物数据
-			initBuildingsOpacitySplit: 0.1, // 建筑物透明度的最低值
+			initBuildingsOpacitySplit: 0.3, // 建筑物透明度的最低值
 			transports: null, // 交通数据
 			xScale: null, // x坐标比例尺
 			yScale: null, // y坐标比例尺
 			speedColorScale: d3.scaleLinear() // 速度颜色映射
 				.domain([250, 350, 470])
-				.range(["red", "orange", "green"]),
+				.range(["FF4F4D", "#FF8742", "#9BFF85"]),
 			timeScale: null, // 时间比例尺
 			curTime: d3.timeParse('%Y-%m-%d %H:%M:%S')(this.date + ' 00:00:00').getTime(), // 当前时间, 例: 2023-03-03 00:00:00
 			relativeDay: null, // 当前时间相对于一天的比例, [0, 1]
@@ -46,6 +46,7 @@ export default {
 	async mounted() {
 		await this.initBuildings();
 		await this.initTransports(this.date);
+		this.defineGlowEffect()
 		this.drawTimeline();
 	},
 
@@ -143,18 +144,19 @@ export default {
 			const picture_range = 1.0;
 
 			const buildingType2color = {
-				"Commercial": "#5F9EA0",   // 兰青色
-				"Residental": "#8B4513",   // 红棕色
+				"Commercial": "#9EFAFF",   // 兰青色
+				"Residental": '#FF61D0',//"#8B4513",   // 红棕色
 				"School": "#32CD32",       // 草绿色
 				"Other": "#000000"         // 黑色
 			};
 
 
 			this.svg = d3.select("#chart").append("svg")
-				.attr("width", "100%")
-				.attr("height", "100%")
-				.style("background-color", "rgb(255, 255, 240)")
-				.style("border", "1px solid black");
+							.attr("width", "100%")
+							.attr("height", "100%")
+							.style("background-color", "#404a59")
+							.style("border", "0px solid white")
+							.style("border-radius", "10px");
 
 			this.xScale = d3.scaleLinear()
 				.domain([min_x, max_x])
@@ -176,8 +178,8 @@ export default {
 				}).join(" "))
 				.attr("fill", d => buildingType2color[d.buildingType])
 				.attr("fill-opacity", d => d.opacity)
-				.attr("stroke", "black")
-				.attr("stroke-width", 0.8)
+				.attr("stroke", "#D1F0FF")// pale blue
+				.attr("stroke-width", 0.5)
 				.attr("stroke-opacity", d => d.opacity)
 				.on("mouseover", (event, d) => {
 					d3.select(event.currentTarget).attr("fill", "orange").attr("stroke-width", 1.2);
@@ -238,7 +240,9 @@ export default {
 				.attr("class", "timeline")
 				.style("width", "100%")
 				.style("height", "100%")
-				.style("border", "1px solid black");
+				.style("border", "1px solid white")
+				.style("background-color", "grey")
+				.style("border-radius", "10px");
 			this.handle = this.timeline.append("div")
 				.attr("class", "handle")
 				.style("position", "relative")
@@ -246,7 +250,8 @@ export default {
 				.style("top", "0px")
 				.style("width", "10px")
 				.style("height", "100%")
-				.style("background-color", "blue");
+				.style("border-radius", "4px")
+				.style("background-color", "white");
 
 			this.drawTimeText();
 
@@ -297,6 +302,7 @@ export default {
 				.style("font-size", "30px")
 				.attr("font-family", "Arial, Helvetica, sans-serif")
 				.attr("font-weight", "bold")
+				.attr("fill", "#fff") // 设置字体颜色为白色
 				.text(this.curRealTime);
 		},
 
@@ -359,9 +365,33 @@ export default {
 				.attr("class", "scatter-point")
 				.attr("cx", (d) => { return this.xScale(d.loc_x); })
 				.attr("cy", (d) => { return this.yScale(d.loc_y); })
-				.attr("r", 2)
+				.attr("r", 2.5)
 				.attr("fill-opacity", 1.0)
 				.attr("fill", (d) => { return this.speedColorScale(d.speed); })
+				// 添加发光特效
+				.style("filter", "url(#glow)");
+		},
+
+		// 在适当的地方定义发光效果滤镜
+		defineGlowEffect() {
+			// 创建一个滤镜
+			var defs = this.svg.append("defs");
+
+			var filter = defs.append("filter")
+				.attr("id", "glow");
+
+			// 添加高斯模糊
+			filter.append("feGaussianBlur")
+				.attr("stdDeviation", 100)
+				.attr("result", "coloredBlur");
+
+			// 将原始图像与模糊图像叠加
+			var feMerge = filter.append("feMerge");
+
+			feMerge.append("feMergeNode")
+				.attr("in", "coloredBlur");
+			feMerge.append("feMergeNode")
+				.attr("in", "SourceGraphic");
 		},
 
 		clearTransportsScatterPlot() {
@@ -377,10 +407,10 @@ export default {
 			const label2Color = {
 				0: { "arrowColor": "orange", "circleColor": "orange" },
 				1: { "arrowColor": "yellow", "circleColor": "yellow" },
-				2: { "arrowColor": "green", "circleColor": "green" },
-				3: { "arrowColor": "purple", "circleColor": "purple" },
-				4: { "arrowColor": "blue", "circleColor": "blue" },
-				5: { "arrowColor": "red", "circleColor": "red" },
+				2: { "arrowColor": "green", "circleColor": "#00FF6A" },
+				3: { "arrowColor": "purple", "circleColor": "#FF66E5" },
+				4: { "arrowColor": "blue", "circleColor": "#24A0FF" },
+				5: { "arrowColor": "red", "circleColor": "#FF6B6B" },
 			};
 
 			if (id1 != 'null' && id1 != undefined) {

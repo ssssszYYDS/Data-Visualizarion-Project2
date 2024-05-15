@@ -53,8 +53,8 @@ export default {
 		generateChartData(centers, selectedLabel) {
 			return {
 				title:{
-					text: "ID " + selectedLabel+' Habit',
-					top: 'center',
+					text: "ID " + selectedLabel,
+					top: "20%",
 					right: 0 ,
 					textStyle: {
 					color: '#fff',
@@ -114,53 +114,53 @@ export default {
 						name: 'Participant ID ' + selectedLabel,
 						type: 'pie',
 						radius: ['45%', '60%'],
-						labelLine: {
-							length: 15
-						},
-						label: {
-							formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}/: }  {per|{d}%}',
-							backgroundColor: '#F6F8FC',
-							borderColor: '#8C8D8E',
-							borderWidth: 1,
-							borderRadius: 4,
-							rich: {
-								a: {
-									color: '#4C5058',
-									lineHeight: 20,
-									fontSize: 14,
-									fontWeight: 'bold',
-									align: 'center'
-								},
-								hr: {
-									borderColor: '#8C8D8E',
-									width: '100%',
-									borderWidth: 1,
-									height: 0
-								},
-								b: {
-									color: '#4C5058',
-									fontSize: 13,
-									fontWeight: 'bold',
-									lineHeight: 20
-								},
-								per: {
-									color: '#fff',
-									backgroundColor: '#4C5058',
-									padding: [3, 4],
-									borderRadius: 4
-								},
-								p: {
-									color: '#6E7079',
-									lineHeight: 20,
-									align: 'center'
-								},
-								c: {
-									color: '#4C5058',
-									lineHeight: 20,
-									align: 'center'
-								}
-							}
-						},
+						// labelLine: {
+						// 	length: 15
+						// },
+						// label: {
+						// 	formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}/: }  {per|{d}%}',
+						// 	backgroundColor: '#F6F8FC',
+						// 	borderColor: '#8C8D8E',
+						// 	borderWidth: 1,
+						// 	borderRadius: 4,
+						// 	rich: {
+						// 		a: {
+						// 			color: '#4C5058',
+						// 			lineHeight: 20,
+						// 			fontSize: 14,
+						// 			fontWeight: 'bold',
+						// 			align: 'center'
+						// 		},
+						// 		hr: {
+						// 			borderColor: '#8C8D8E',
+						// 			width: '100%',
+						// 			borderWidth: 1,
+						// 			height: 0
+						// 		},
+						// 		b: {
+						// 			color: '#4C5058',
+						// 			fontSize: 13,
+						// 			fontWeight: 'bold',
+						// 			lineHeight: 20
+						// 		},
+						// 		per: {
+						// 			color: '#fff',
+						// 			backgroundColor: '#4C5058',
+						// 			padding: [3, 4],
+						// 			borderRadius: 4
+						// 		},
+						// 		p: {
+						// 			color: '#6E7079',
+						// 			lineHeight: 20,
+						// 			align: 'center'
+						// 		},
+						// 		c: {
+						// 			color: '#4C5058',
+						// 			lineHeight: 20,
+						// 			align: 'center'
+						// 		}
+						// 	}
+						// },
 						data: centers.map(item => ({ value: parseFloat(item[selectedLabel]), name: item[''] })).slice(0, 5)
 					}
 				]

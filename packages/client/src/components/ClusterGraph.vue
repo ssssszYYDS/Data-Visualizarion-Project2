@@ -108,7 +108,7 @@ export default {
 				.attr("text-anchor", "middle")
 				.attr("fill", "#fff")
 				.attr("font-style", "italic")
-				.style("font-size", "24px")
+				.style("font-size", "16px")
 				.style("font-weight", "bold")
 				.text("Different Life Patterns");
 				

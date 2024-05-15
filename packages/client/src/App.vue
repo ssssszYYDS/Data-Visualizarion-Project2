@@ -55,7 +55,7 @@ const handleSelectedIdUpdate = (newId, newLabel) => {
 </script>
 
 <template>
-	<div class="wrapper">
+	<div class="wrapper" style="background-color: #BFD9DE">
 		<div class="calendar">
 			<CalendarComponent :date="date" @update:date="handleDateUpdate" :selectedId1=selectedId1
 				:selectedId2=selectedId2 @update:selectedId="handleSelectedIdUpdate">
