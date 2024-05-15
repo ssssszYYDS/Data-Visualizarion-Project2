@@ -19,7 +19,6 @@ const selectedId1 = ref({ id: 'null', label: null });
 const selectedId2 = ref({ id: 'null', label: null });
 var nextChangeId = 1;
 const handleSelectedIdUpdate = (newId, newLabel) => {
-	console.log('newId:', newId, 'newLabel:', newLabel);
 	if (newId === 'null') {
 		if (selectedId1.value.id == 'null') {
 			selectedId2.value = { id: 'null', label: null };

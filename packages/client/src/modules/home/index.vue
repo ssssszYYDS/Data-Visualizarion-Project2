@@ -446,7 +446,6 @@ export default {
 
 			if (id1 != 'null' && id1 != undefined) {
 				const selectData = this.selectDataById(id1);
-				console.log("selectData1 length: " + selectData.length);
 				const arrowColor = label2Color[label1].arrowColor;
 				const circleColor = label2Color[label1].circleColor;
 
@@ -495,7 +494,6 @@ export default {
 			}
 			if (id2 != 'null' && id2 != undefined) {
 				const selectData = this.selectDataById(id2);
-				console.log("selectData2 length: " + selectData.length);
 				const arrowColor = label2Color[label2].arrowColor;
 				const circleColor = label2Color[label2].circleColor;
 
