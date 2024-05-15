@@ -19,11 +19,11 @@ export default {
 			startTime: +new Date("2022-03-01T00:00:00"),
 			current_time: '2022-03-01',
 			types: [
-				{ name: 'AtHome', color: '#7b9ce1' },
-				{ name: 'Transport', color: '#bd6d6c' },
-				{ name: 'AtRecreation', color: '#75d874' },
-				{ name: 'AtRestaurant', color: '#e0bc78' },
-				{ name: 'AtWork', color: '#dc77dc' },
+				{ name: 'AtHome', color: '#009cff' },
+				{ name: 'Transport', color: '#ffa500' },
+				{ name: 'AtRecreation', color: '#75f874' },
+				{ name: 'AtRestaurant', color: '#ff0000' },
+				{ name: 'AtWork', color: '#8a2be2' },
 			]
 		};
 	},
@@ -50,20 +50,20 @@ export default {
 		async loadData() {
 			try {
 				this.data = []; // 清空之前的数据
-				const centers = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/dailyrountine/'+ this.current_time+'.csv' });
-				this.alldata = centers;	
+				const centers = await HttpHelper.post(Urls.getCSVData, { path: 'CSVData/dailyrountine/' + this.current_time + '.csv' });
+				this.alldata = centers;
 				console.table(this.alldata.slice(0, 5));
-				console.log('CSVData/dailyrountine/'+ this.current_time+'.csv');
+				console.log('CSVData/dailyrountine/' + this.current_time + '.csv');
 
 				const firstRow = centers[0];
 				this.columns = Object.keys(firstRow);
-				console.log("money data colums: ",Object.keys(firstRow));
+				console.log("money data colums: ", Object.keys(firstRow));
 				// console.log("centers data: ");
 				// console.log(centers);
 				// console.log("participantRow:", this.columns);
 				this.generateRountine(this.alldata, this.participantId[0], this.columns, 0);
 				this.generateRountine(this.alldata, this.participantId[1], this.columns, 1);
-	
+
 				this.renderChart();
 			} catch (error) {
 				console.error("Failed to load centers data:", error);
@@ -119,7 +119,7 @@ export default {
 					left: 'center',
 					textStyle: {
 						color: '#fff', // 设置图例文字颜色为白色
-						fontStyle:'italic'
+						fontStyle: 'italic'
 					}
 				},
 				xAxis: {
@@ -136,7 +136,7 @@ export default {
 				},
 				grid: {
 					height: '80%', // 使用百分比设置高度
-					top:"15px"
+					top: "15px"
 				},
 				xAxis: {
 					show: false,
@@ -144,7 +144,7 @@ export default {
 					scale: true,
 					axisLabel: {
 						formatter: (val) => {
-							return Math.max(0, val - this.startTime)/(300) + ' ms';
+							return Math.max(0, val - this.startTime) / (300) + ' ms';
 						}
 					},
 					axisLine: {
@@ -166,13 +166,13 @@ export default {
 					},
 					axisTick: {
 						show: true, // 隐藏刻度线
-					},					
+					},
 					axisLabel: {
 						formatter: (val) => {
-							return "ID "+ val;
+							return "ID " + val;
 						}
 					},
-					
+
 				},
 				series: [
 					{
@@ -199,7 +199,7 @@ export default {
 				type: 'rect',
 				shape: {
 					x: start[0],
-					y: start[1] + height*1.2,
+					y: start[1] + height * 1.2,
 					width: end[0] - start[0],
 					height: height
 				},
@@ -219,36 +219,36 @@ export default {
 				layout: 'vertical',
 				align: 'left',
 				children: this.types.map((type, index) => ({
-				type: 'group',
-				left: 0,
-				top: index * (legendItemHeight + legendItemMargin),
-				children: [
-					{
-					type: 'rect',
+					type: 'group',
 					left: 0,
-					top: 0,
-					shape: {
-						width: legendItemWidth,
-						height: legendItemHeight,
-					},
-					style: {
-						fill: type.color,
-					},
-					},
-					{
-					type: 'text',
-					left: legendItemWidth + 5,
-					top: 3,
-					style: {
-						text: type.name,
-						fill: '#fff',
-						fontSize: 10,
-					},
-					},
-				],
+					top: index * (legendItemHeight + legendItemMargin),
+					children: [
+						{
+							type: 'rect',
+							left: 0,
+							top: 0,
+							shape: {
+								width: legendItemWidth,
+								height: legendItemHeight,
+							},
+							style: {
+								fill: type.color,
+							},
+						},
+						{
+							type: 'text',
+							left: legendItemWidth + 5,
+							top: 3,
+							style: {
+								text: type.name,
+								fill: '#fff',
+								fontSize: 10,
+							},
+						},
+					],
 				})),
 			};
-			},
+		},
 	}
 };
 </script>

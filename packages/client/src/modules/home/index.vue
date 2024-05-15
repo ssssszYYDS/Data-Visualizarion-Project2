@@ -152,11 +152,11 @@ export default {
 
 
 			this.svg = d3.select("#chart").append("svg")
-							.attr("width", "100%")
-							.attr("height", "100%")
-							.style("background-color", "#404a59")
-							.style("border", "0px solid white")
-							.style("border-radius", "10px");
+				.attr("width", "100%")
+				.attr("height", "100%")
+				.style("background-color", "#404a59")
+				.style("border", "0px solid white")
+				.style("border-radius", "10px");
 
 			this.xScale = d3.scaleLinear()
 				.domain([min_x, max_x])
@@ -182,10 +182,18 @@ export default {
 				.attr("stroke-width", 0.5)
 				.attr("stroke-opacity", d => d.opacity)
 				.on("mouseover", (event, d) => {
-					d3.select(event.currentTarget).attr("fill", "orange").attr("stroke-width", 1.2);
+					d3.select(event.currentTarget)
+						.attr("fill", "orange")
+						.attr("fill-opacity", 1.0)
+						.attr("stroke-width", 1.2)
+						.attr("stroke-opacity", 1.0);
 				})
 				.on("mouseout", (event, d) => {
-					d3.select(event.currentTarget).attr("fill", buildingType2color[d.buildingType]).attr("stroke-width", 0.8);
+					d3.select(event.currentTarget)
+						.attr("fill", buildingType2color[d.buildingType])
+						.attr("fill-opacity", d.opacity)
+						.attr("stroke-width", 0.8)
+						.attr("stroke-opacity", d.opacity);
 				});
 		},
 

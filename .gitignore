@@ -14,5 +14,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 
+add.bat
 push.bat
 pull.bat
