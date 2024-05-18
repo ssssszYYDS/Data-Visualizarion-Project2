@@ -1,6 +1,6 @@
 <template>
   <div class="page-not-found-wrapper">
-    额，找不到喔，是不是地址输错了捏？
+    Page not Find !!!
   </div>
 </template>
 <script>

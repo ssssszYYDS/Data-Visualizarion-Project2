@@ -29,7 +29,7 @@ export default {
 
 	watch: {
 		date: function (newDate) {
-			this.initRiverMap(newDate); // 监听 date 的变化，并重新运行 initRiverMap 方法
+			this.initRiverMap(newDate); 
 		}
 	},
 

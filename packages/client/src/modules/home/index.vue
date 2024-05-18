@@ -25,21 +25,21 @@ export default {
 
 	data() {
 		return {
-			svg: null, // SVG图
-			width: null, // SVG图 宽度
-			height: null, // SVG图 高度
-			buildings: null, // 建筑物数据
-			initBuildingsOpacitySplit: 0.3, // 建筑物透明度的最低值
-			transports: null, // 交通数据
-			xScale: null, // x坐标比例尺
-			yScale: null, // y坐标比例尺
-			speedColorScale: d3.scaleLinear() // 速度颜色映射
+			svg: null, 
+			width: null, 
+			height: null, 
+			buildings: null, 
+			initBuildingsOpacitySplit: 0.3, // min opacity 
+			transports: null, 
+			xScale: null, 
+			yScale: null, 
+			speedColorScale: d3.scaleLinear() 
 				.domain([250, 350, 470])
 				.range(["FF4F4D", "#FF8742", "#9BFF85"]),
-			timeScale: null, // 时间比例尺
-			curTime: d3.timeParse('%Y-%m-%d %H:%M:%S')(this.date + ' 00:00:00').getTime(), // 当前时间, 例: 2023-03-03 00:00:00
-			relativeDay: null, // 当前时间相对于一天的比例, [0, 1]
-			curRealTime: null, // 当前真实时间
+			timeScale: null, 
+			curTime: d3.timeParse('%Y-%m-%d %H:%M:%S')(this.date + ' 00:00:00').getTime(), //  2023-03-03 00:00:00
+			relativeDay: null, // time ratio, [0, 1]
+			curRealTime: null, 
 		};
 	},
 
@@ -85,7 +85,7 @@ export default {
 		},
 
 		async initBuildingsOpacityByApartment(buildings, split) {
-			// 根据租金设置建筑物的透明度
+			// according to rent to set apartments paras
 			const apartments = await HttpHelper.post(Urls.getCSVData, { path: 'Attributes/Apartments.csv' });
 			const rents = apartments.map(apt => parseFloat(apt.rentalCost));
 			const minRent = Math.min(...rents);
@@ -104,7 +104,7 @@ export default {
 		},
 
 		async initBuildingsOpacityByCheckin(buildings, split) {
-			// 根据checkin设置建筑物的透明度
+			// according to checkin to set buildings paras
 			const checkinJournalCounts = await HttpHelper.post(Urls.getCSVData, { path: 'Journals/CheckinJournalCounts.csv' });
 			var maxJournals = 0;
 			Object.keys(checkinJournalCounts).forEach((key) => {
@@ -144,10 +144,10 @@ export default {
 			const picture_range = 1.0;
 
 			const buildingType2color = {
-				"Commercial": "#9EFAFF",   // 兰青色
-				"Residental": '#FF61D0',//"#8B4513",   // 红棕色
-				"School": "#32CD32",       // 草绿色
-				"Other": "#000000"         // 黑色
+				"Commercial": "#9EFAFF",   // green + blue
+				"Residental": '#FF61D0',//"#8B4513",   // red + black
+				"School": "#32CD32",       // green
+				"Other": "#000000"         // black
 			};
 
 
@@ -158,7 +158,7 @@ export default {
 				.style("border", "0px solid white")
 				.style("border-radius", "10px");
 
-			// 创建一个 div 用于显示悬浮框内容
+
 			this.tooltip = d3.select("body").append("div")
 				.attr("class", "tooltip")
 				.style("opacity", 0);
@@ -170,12 +170,12 @@ export default {
 				.domain([min_y, max_y])
 				.range([0, this.height * picture_range]);
 
-			// await this.initBuildingsOpacityByApartment(buildings, this.initBuildingsOpacitySplit); // 根据租金设置建筑物的透明度
-			await this.initBuildingsOpacityByCheckin(this.buildings, this.initBuildingsOpacitySplit); // 根据checkin设置建筑物的透明度
+			// await this.initBuildingsOpacityByApartment(buildings, this.initBuildingsOpacitySplit); //  according to rent to set apartments paras
+			await this.initBuildingsOpacityByCheckin(this.buildings, this.initBuildingsOpacitySplit); // according to checkin to set buildings paras
 
 
 
-			// 添加悬浮框交互
+
 			this.svg.selectAll("polygon")
 				.data(data)
 				.enter()
@@ -190,7 +190,7 @@ export default {
 				.attr("stroke-width", 0.5)
 				.attr("stroke-opacity", d => d.opacity)
 				.on("mouseover", (event, d) => {
-					// 显示悬浮框并设置内容
+		
 					this.tooltip.transition()
 						.duration(150)
 						.style("opacity", 0.9);
@@ -198,7 +198,7 @@ export default {
 						.style("left", (event.pageX + 24) + "px")
 						.style("top", (event.pageY + 24) + "px");
 
-					// 改变多边形样式
+
 					d3.select(event.currentTarget)
 						.attr("fill", "orange")
 						.attr("fill-opacity", 1.0)
@@ -206,12 +206,11 @@ export default {
 						.attr("stroke-opacity", 1.0);
 				})
 				.on("mouseout", (event, d) => {
-					// 隐藏悬浮框
+
 					this.tooltip.transition()
 						.duration(400)
 						.style("opacity", 0);
 
-					// 恢复多边形样式
 					d3.select(event.currentTarget)
 						.attr("fill", buildingType2color[d.buildingType])
 						.attr("fill-opacity", d.opacity)
@@ -251,7 +250,6 @@ export default {
 				if (transportsData != null) {
 					this.clearTransportsScatterPlot();
 
-					// 绘制轨迹图
 					if (this.selectedId1 != 'null')
 						this.drawTransportsTracePlot(this.selectedId1.id, this.selectedId1.label);
 					if (this.selectedId2 != 'null')
@@ -267,7 +265,7 @@ export default {
 		drawTimeline() {
 			this.clearTimeline();
 
-			// 设置时间轴和时间轴滑块
+	
 			this.timeline = d3.select(".timeline")
 				.attr("class", "timeline")
 				.style("width", "100%")
@@ -287,7 +285,7 @@ export default {
 
 			this.drawTimeText();
 
-			// 定义拖拽行为
+	
 			this.handle.call(d3.drag()
 				.on("drag", (event) => {
 					var startTime = new Date().getTime();
@@ -334,7 +332,7 @@ export default {
 				.style("font-size", "30px")
 				.attr("font-family", "Arial, Helvetica, sans-serif")
 				.attr("font-weight", "bold")
-				.attr("fill", "#fff") // 设置字体颜色为白色
+				.attr("fill", "#fff") 
 				.text(this.curRealTime);
 		},
 
@@ -348,7 +346,7 @@ export default {
 		selectDataByCurTime(curTime) {
 			var leftMaxTimeStamp = parseFloat(d3.max(this.transports, d => d.timeStampFloat <= curTime ? d.timeStampFloat : -Infinity));
 			var rightMinTimeStamp = parseFloat(d3.min(this.transports, d => d.timeStampFloat >= curTime ? d.timeStampFloat : Infinity));
-			// 边缘情况
+
 			if (leftMaxTimeStamp == rightMinTimeStamp)
 				if (parseFloat(d3.min(this.transports, d => d.timeStampFloat > curTime ? d.timeStampFloat : Infinity)) == Infinity) {
 					leftMaxTimeStamp = parseFloat(d3.max(this.transports, d => d.timeStampFloat < curTime ? d.timeStampFloat : -Infinity));
@@ -389,7 +387,7 @@ export default {
 
 		drawTransportsScatterPlot(selectData) {
 			this.clearTransportsScatterPlot();
-			// 画散点图
+
 			this.svg.selectAll("circle")
 				.data(selectData)
 				.enter()
@@ -400,24 +398,24 @@ export default {
 				.attr("r", 2.5)
 				.attr("fill-opacity", 1.0)
 				.attr("fill", (d) => { return this.speedColorScale(d.speed); })
-				// 添加发光特效
+
 				.style("filter", "url(#glow)");
 		},
 
-		// 在适当的地方定义发光效果滤镜
+
 		defineGlowEffect() {
-			// 创建一个滤镜
+
 			var defs = this.svg.append("defs");
 
 			var filter = defs.append("filter")
 				.attr("id", "glow");
 
-			// 添加高斯模糊
+	
 			filter.append("feGaussianBlur")
 				.attr("stdDeviation", 100)
 				.attr("result", "coloredBlur");
 
-			// 将原始图像与模糊图像叠加
+
 			var feMerge = filter.append("feMerge");
 
 			feMerge.append("feMergeNode")
@@ -449,7 +447,7 @@ export default {
 				const arrowColor = label2Color[label1].arrowColor;
 				const circleColor = label2Color[label1].circleColor;
 
-				// 定义箭头标记
+	
 				this.svg.append("defs").append("marker")
 					.attr("id", `arrowhead${arrowColor}`)
 					.attr("viewBox", "0 0 10 10")
@@ -463,7 +461,7 @@ export default {
 					.append("path")
 					.attr("d", "M 0 0 L 10 5 L 0 10 L 4 5 z");
 
-				// 额外绘制新的线条并添加箭头标记
+		
 				this.svg.selectAll(`line.trace-line1`)
 					.data(selectData.slice(0, -1))
 					.enter()
@@ -477,7 +475,7 @@ export default {
 					.attr("stroke-width", 1)
 					.attr("marker-end", `url(#arrowhead${arrowColor})`);
 
-				// 根据停留时间绘制圆圈
+		
 				var stayTime = 0;
 				var lastData = selectData[0];
 				selectData.forEach((data) => {
@@ -497,7 +495,6 @@ export default {
 				const arrowColor = label2Color[label2].arrowColor;
 				const circleColor = label2Color[label2].circleColor;
 
-				// 定义箭头标记
 				this.svg.append("defs").append("marker")
 					.attr("id", `arrowhead${arrowColor}`)
 					.attr("viewBox", "0 0 10 10")
@@ -511,7 +508,7 @@ export default {
 					.append("path")
 					.attr("d", "M 0 0 L 10 5 L 0 10 L 4 5 z");
 
-				// 额外绘制新的线条并添加箭头标记
+
 				this.svg.selectAll(`line.trace-line2`)
 					.data(selectData.slice(0, -1))
 					.enter()
@@ -525,7 +522,7 @@ export default {
 					.attr("stroke-width", 1)
 					.attr("marker-end", `url(#arrowhead${arrowColor})`);
 
-				// 根据停留时间绘制圆圈
+	
 				var stayTime = 0;
 				var lastData = selectData[0];
 				selectData.forEach((data) => {
@@ -567,7 +564,6 @@ const toDetail = async () => {
 	router.push('/detail');
 };
 
-// 测试发送请求
 const sendMessage = async () => {
 	// var res = await HttpHelper.post(Urls.getDetail, { name: 'test' });
 	// console.log(res);

@@ -59,7 +59,7 @@ export default {
 			const label = String(time);
 			console.log(label);
 			this.current_time = label;
-			await this.loadData(); // 更新数据
+			await this.loadData(); // update
 			this.generateRountine(this.alldata, this.columns);
 			this.renderChart();
 		});
@@ -92,7 +92,7 @@ export default {
 		},
 
 		generateRountine(alldata, columns) {
-			this.data = []; // 清空之前的数据
+			this.data = []; // reinit
 			for (let index = 0; index < 2; index++) {
 				const selectedId = (index ? this.selectedId2.id : this.selectedId1.id);
 				const nullId = (selectedId == 'null' || selectedId == null || selectedId == undefined);
@@ -111,7 +111,7 @@ export default {
 					if (nullId || typeItem?.name == undefined)
 						this.data.push({
 							name: 'null',
-							value: [2 - index, date1.getTime(), date2.getTime(), duration], // 使用 index 区分数据
+							value: [2 - index, date1.getTime(), date2.getTime(), duration], 
 							itemStyle: {
 								normal: {
 									color: '#808080'
@@ -121,7 +121,7 @@ export default {
 					else
 						this.data.push({
 							name: typeItem.name,
-							value: [2 - index, date1.getTime(), date2.getTime(), duration], // 使用 index 区分数据
+							value: [2 - index, date1.getTime(), date2.getTime(), duration], 
 							itemStyle: {
 								normal: {
 									color: typeItem.color
@@ -250,10 +250,10 @@ export default {
 
 			return {
 				type: 'group',
-				left: 'center', // 居中显示
-				bottom: 2, // 距离底部一定距离
-				layout: 'horizontal', // 横向布局
-				align: 'center', // 自动对齐
+				left: 'center', 
+				bottom: 2, 
+				layout: 'horizontal', 
+				align: 'center', 
 				children: this.types.map((type, index) => ({
 					type: 'group',
 					left: index = legendItemMargin + index * (legendItemWidth + legendItemMargin),
@@ -273,7 +273,7 @@ export default {
 						{
 							type: 'text',
 							left: 0,
-							top: legendItemHeight + 2, // 放在颜色下方
+							top: legendItemHeight + 2, 
 							style: {
 								text: type.name,
 								fill: '#fff',

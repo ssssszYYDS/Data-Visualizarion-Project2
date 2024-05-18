@@ -37,7 +37,7 @@ export default {
 					formatter: '{a}: {d}%',
 				},
 				grid: {
-					top: '100%', // 调整图表向上移动的值
+					top: '100%', 
 					right: "25%",
 					left: "25%",
 				},
@@ -48,8 +48,8 @@ export default {
 					textStyle: {
 						color: '#fff'
 					},
-					itemWidth: 20, // 调整图例项宽度
-					itemHeight: 10, // 调整图例项高度
+					itemWidth: 20, 
+					itemHeight: 10, 
 					bottom: 26,
 				},
 				series: [
@@ -136,7 +136,7 @@ export default {
 					formatter: '{a}: {d}%',
 				},
 				grid: {
-					top: '100%', // 调整图表向上移动的值
+					top: '100%', 
 					right: "25%",
 					left: "25%",
 				},
@@ -156,8 +156,8 @@ export default {
 					textStyle: {
 						color: '#fff'
 					},
-					itemWidth: 20, // 调整图例项宽度
-					itemHeight: 10, // 调整图例项高度
+					itemWidth: 20,
+					itemHeight: 10, 
 					bottom: 26,
 				},
 				series: [

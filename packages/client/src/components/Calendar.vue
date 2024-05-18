@@ -210,7 +210,7 @@ export default {
 					{
 						type: 'scatter',
 						coordinateSystem: 'calendar',
-						calendarIndex: 1, // 指定该系列属于第二个日历
+						calendarIndex: 1, 
 						symbol: 'rect',
 						symbolSize: function (val) {
 							return [20, 20];
@@ -229,12 +229,12 @@ export default {
 							fontSize: 10,
 							offset: [0, 0],
 						},
-						data: this.getVirtualData("2022") // 填充您的虚拟数据
+						data: this.getVirtualData("2022") 
 					},
 					{
 						type: 'scatter',
 						coordinateSystem: 'calendar',
-						calendarIndex: 2, // 指定该系列属于第二个日历
+						calendarIndex: 2, 
 						symbol: 'rect',
 						symbolSize: function (val) {
 							return [20, 20];
@@ -253,20 +253,20 @@ export default {
 							fontSize: 10,
 							offset: [0, 0]
 						},
-						data: this.getVirtualData("2022") // 填充您的虚拟数据
+						data: this.getVirtualData("2022") 
 					}
 				]
 			};
 			this.calendarInstance.setOption(option);
-			this.resizeChart(); // 初始调整大小
+			this.resizeChart(); 
 			this.calendarInstance.on('click', this.handleCellClick);
 		},
 		resizeChart() {
 			const chartDom = this.$refs.chart;
 			const width = chartDom.clientWidth;
 			const height = chartDom.clientHeight - 50;
-			this.cellWidth = Math.floor(width / 26); // 每周7天
-			this.cellHeight = Math.floor(height / 4); // 6行
+			this.cellWidth = Math.floor(width / 26);
+			this.cellHeight = Math.floor(height / 4); 
 			this.calendarInstance.setOption({
 				title: {
 					top: this.cellHeight / 6,
@@ -302,7 +302,7 @@ export default {
 		},
 		handleCellClick(params) {
 			if (params.componentType === 'series') {
-				this.$emit('update:date', params.value[0]); // 使用this.$emit而不是this.emit
+				this.$emit('update:date', params.value[0]); 
 				bus.emit('time', params.value[0]);
 			}
 		},
